@@ -18,21 +18,6 @@ def upload_asset() -> None:
     _not_implemented()
 
 
-@router.post("/resumes/{resume_id}/validate", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def validate_resume(resume_id: int) -> None:
-    _not_implemented()
-
-
-@router.post("/resumes/{resume_id}/export", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def export_resume(resume_id: int) -> None:
-    _not_implemented()
-
-
-@router.get("/exports/{job_id}/download", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def download_export(job_id: int) -> None:
-    _not_implemented()
-
-
 @router.post("/resumes/{resume_id}/import", status_code=status.HTTP_501_NOT_IMPLEMENTED)
 def import_file(resume_id: int) -> None:
     _not_implemented()

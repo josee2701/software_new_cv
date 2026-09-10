@@ -207,13 +207,9 @@ def test_domain_errors(client: TestClient) -> None:
     ("method", "path"),
     [
         ("post", "/api/assets"),
-        ("post", "/api/resumes/1/validate"),
-        ("post", "/api/resumes/1/export"),
-        ("get", "/api/exports/1/download"),
         ("post", "/api/resumes/1/import"),
         ("post", "/api/resumes/1/postings"),
         ("get", "/api/postings/1/match"),
-        ("post", "/api/snapshots/1/restore"),
     ],
 )
 def test_pending_endpoints_return_501(client: TestClient, method: str, path: str) -> None:
@@ -237,4 +233,100 @@ def test_preview_endpoint(client: TestClient) -> None:
     assert r.headers["content-type"].startswith("text/html")
     assert "Ana Gómez" in r.text
     assert "density-compact" in r.text
+    assert int(r.headers["X-Pages"]) >= 1
     assert client.get(f"/api/resumes/{rid}/preview", params={"profile_id": 999}).status_code == 404
+
+
+def test_export_and_download_flow(client: TestClient) -> None:
+    from app.routers.exports import get_validation_engine
+    from services.export import null_engine
+
+    client.app.dependency_overrides[get_validation_engine] = lambda: null_engine  # type: ignore[attr-defined]
+    rid = client.post("/api/resumes", json={"name": "Export"}).json()["id"]
+    client.put(f"/api/resumes/{rid}/basics", json={
+        "full_name": "Ana María Gómez Ruiz", "headline": "Backend", "email": "ana@correo.co",
+        "phone": "3001234567", "city": "Bogotá", "summary": "Ingeniera backend.",
+    })  # fmt: skip
+    exp = client.post(f"/api/resumes/{rid}/experiences", json={
+        "company": "ACME", "role": "Dev", "start_date": "2021-03", "is_current": True,
+    }).json()  # fmt: skip
+    client.post(
+        f"/api/experiences/{exp['id']}/achievements",
+        json={"text": "Reduje costos de nube 20% en 6 meses"},
+    )
+    profiles = client.get(f"/api/resumes/{rid}/profiles").json()
+    ats = next(p for p in profiles if p["destination"] == "ats")
+
+    r = client.post(
+        f"/api/resumes/{rid}/export",
+        json={"profile_id": ats["id"], "formats": ["pdf", "docx", "json"]},
+    )
+    assert r.status_code == 201, r.text
+    body = r.json()
+    job = body["job"]
+    assert job["status"] == "done" and body["score"] == 100
+    assert body["files"] == [
+        "Ana_Gomez_CV_ats.pdf",
+        "Ana_Gomez_CV_ats.docx",
+        "Ana_Gomez_CV_ats.json",
+    ]
+    assert body["coverage"] >= 0.95
+    assert client.get(f"/api/exports/{job['id']}").json()["status"] == "done"
+
+    pdf = client.get(body["downloads"][0])
+    assert pdf.status_code == 200
+    assert pdf.headers["content-type"] == "application/pdf"
+    assert pdf.content.startswith(b"%PDF")
+    assert "Ana_Gomez_CV_ats.pdf" in pdf.headers["content-disposition"]
+    js = client.get(f"/api/exports/{job['id']}/download", params={"format": "json"})
+    assert js.json()["id"] == rid
+    assert (
+        client.get(
+            f"/api/exports/{job['id']}/download", params={"format": "pdf", "variant": "sinfoto"}
+        ).status_code
+        == 404
+    )
+    assert client.get("/api/exports/999/download").status_code == 404
+    r = client.post(f"/api/resumes/{rid}/export", json={"profile_id": ats["id"], "formats": []})
+    assert r.status_code == 422
+
+
+def test_export_blocked_with_fake_engine(client: TestClient) -> None:
+    from app.routers.exports import get_validation_engine
+    from models.enums import Severity
+    from validator.types import Finding, Report
+
+    def blocking(ctx: object) -> Report:
+        return Report(score=50, findings=(Finding("contact.email_present", Severity.ERROR, "x"),))
+
+    client.app.dependency_overrides[get_validation_engine] = lambda: blocking  # type: ignore[attr-defined]
+    rid = client.post("/api/resumes", json={"name": "Bloq"}).json()["id"]
+    ats = client.get(f"/api/resumes/{rid}/profiles").json()[0]
+    body = client.post(f"/api/resumes/{rid}/export", json={"profile_id": ats["id"]}).json()
+    assert body["job"]["status"] == "blocked"
+    assert body["files"] == [] and body["errors"] == 1
+    assert body["findings"][0]["rule_id"] == "contact.email_present"
+
+
+_HAS_ENGINE = __import__("importlib").util.find_spec("validator.engine") is not None
+
+
+@pytest.mark.xfail(
+    not _HAS_ENGINE, reason="validator.engine (Backend-Validador) aún no existe", strict=True
+)
+def test_export_ats_blocked_by_real_validator(client: TestClient) -> None:
+    rid = client.post("/api/resumes", json={"name": "Vacío"}).json()["id"]
+    ats = client.get(f"/api/resumes/{rid}/profiles").json()[0]
+    body = client.post(f"/api/resumes/{rid}/export", json={"profile_id": ats["id"]}).json()
+    assert body["job"]["status"] == "blocked"
+
+
+def test_snapshot_restore_api(client: TestClient) -> None:
+    rid = client.post("/api/resumes", json={"name": "Snap"}).json()["id"]
+    client.put(f"/api/resumes/{rid}/basics", json={"full_name": "Antes"})
+    snap = client.post(f"/api/resumes/{rid}/snapshots", json={"label": "v1"}).json()
+    client.put(f"/api/resumes/{rid}/basics", json={"full_name": "Después"})
+    r = client.post(f"/api/snapshots/{snap['id']}/restore")
+    assert r.status_code == 200, r.text
+    assert r.json()["basics"]["full_name"] == "Antes"
+    assert client.post("/api/snapshots/999/restore").status_code == 404

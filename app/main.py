@@ -10,7 +10,17 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import PROJECT_ROOT, get_settings
-from app.routers import experiences, pending, preview, profiles, resumes, sections, technologies
+from app.routers import (
+    experiences,
+    exports,
+    pending,
+    preview,
+    profiles,
+    resumes,
+    sections,
+    technologies,
+    validate,
+)
 from schemas.errors import to_field_errors
 from services.errors import ConflictError, InvalidDataError, NotFoundError
 
@@ -48,7 +58,18 @@ def create_app() -> FastAPI:
         version="0.1.0",
         description="Editor y validador de hojas de vida con exportación ATS y diseño",
     )
-    for module in (resumes, experiences, sections, profiles, technologies, preview, pending):
+    routers = (
+        resumes,
+        experiences,
+        sections,
+        profiles,
+        technologies,
+        preview,
+        exports,
+        validate,
+        pending,
+    )
+    for module in routers:
         app.include_router(module.router, prefix=API_PREFIX)
     static_dir = PROJECT_ROOT / "static"
     if static_dir.is_dir():

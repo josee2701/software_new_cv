@@ -47,6 +47,7 @@ from schemas.skill import (
     SkillUpdate,
 )
 from schemas.technology import TechnologyOut
+from schemas.validation import FindingOut, ValidationReportOut
 
 __all__ = [
     "AchievementCreate",
@@ -71,6 +72,7 @@ __all__ = [
     "ExportProfileCreate",
     "ExportProfileOut",
     "ExportProfileUpdate",
+    "FindingOut",
     "LanguageCreate",
     "LanguageOut",
     "LanguageUpdate",
@@ -94,4 +96,5 @@ __all__ = [
     "SnapshotDetailOut",
     "SnapshotOut",
     "TechnologyOut",
+    "ValidationReportOut",
 ]

@@ -170,3 +170,80 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
 - **Dos agentes de Backend en paralelo** para Fase 2 (resto) y Fase 3: *Backend-Export* y
   *Backend-Validador*, con carpetas disjuntas; archivos compartidos (`app/cli.py`, `app/main.py`,
   `app/routers/pending.py`, `docs/DECISIONS.md`) solo con ediciones puntuales releyendo antes.
+
+## 2026-09-10 — Backend-Export (F2-04…F2-07, §10)
+
+- **PDF** (`export/pdf.py`): WeasyPrint por defecto; metadatos `title`/`authors`/`description`
+  (→ /Subject "Hoja de vida")/`generator` (→ /Creator "cv-ats"). `PDF_ENGINE=playwright` importa
+  Playwright de forma perezosa y, si falta, lanza `PdfEngineError` con la instrucción de
+  instalación; con Chromium no se puede fijar /Author (limitación conocida).
+- **Conteo de páginas**: `render(..., with_pages=True)` usa `count_pages(html)`, cacheado por hash
+  del HTML (LRU de 64). Por defecto `render()` no maqueta. La preview manda `X-Pages` siempre
+  (`?pages=false` lo omite).
+- **Round-trip** (`export/verify.py`): tokens = nombre, empresas, cargos, logros y skills (§9.3);
+  normalización NFKD sin tildes, minúsculas, sin puntuación y tokens de ≥2 caracteres. `verify()`
+  acepta un `profile=` opcional (extensión compatible de la firma) para contar solo lo visible en
+  ese destino (show_in + secciones visibles); sin perfil cuenta todo. Fuentes embebidas: todas las
+  fuentes no Type3 deben tener `FontFile*` en su descriptor. Símbolos permitidos fuera de
+  Latin-1: `• – — ·`.
+- **Un `export_job` por petición** (aunque pida varios formatos): `format` = primer formato
+  pedido; `output_path` = carpeta `data/exports/{job_id}/`. Descarga con
+  `GET /api/exports/{id}/download?format=pdf|docx|json[&variant=sinfoto]`.
+- **Flujo** (`ExportService.run`): render HTML → validación pre (con `html`, sin PDF) → si ats con
+  errores: `blocked`, sin snapshot ni archivos → snapshot → PDF → `verify` → validación completa
+  (html + pages + pdf; es el reporte que se persiste) → ats con error `technical.text_extractable`:
+  `failed`; ats con cualquier otro error post-render (p. ej. `length.pages`): `blocked`; si no,
+  `done` y se escriben los archivos. Solo los `done` dejan archivos. Error inesperado → `failed`
+  con el mensaje. `roundtrip_ok = has_text and coverage ≥ 0.95`.
+- **Nombres**: `{Nombre}_{Apellido}_CV_{ats|correo}[_sinfoto].{ext}` con la regla de unidades de
+  `initials` (primer nombre + primer apellido), sin tildes ni espacios (`Andres_Rojas_CV_ats.pdf`).
+  La variante `_sinfoto` se genera solo en `mail` con `include_photo=true` y solo para PDF.
+- **Motor de validación inyectable**: `ExportService(engine=...)`; por defecto `default_engine()`
+  importa `validator.engine.run` de forma perezosa (si no existe usa un motor nulo, score 100, y lo
+  registra en el log). En la API es la dependencia `get_validation_engine` (sobrescribible).
+- **Persistencia del reporte**: `ExportService._persist_report` escribe `validation_report` +
+  `validation_finding` directamente (recortando textos a los largos de las columnas) porque
+  `services/validation.py` aún no existe; cuando exista, debe reemplazarse por ese servicio.
+- **DOCX**: estilos `Title` (nombre), `Heading 1` (secciones), `Heading 2` (ítems),
+  `List Bullet` (logros) y `Normal`; Letter; fuente y tamaño/márgenes por densidad como la
+  plantilla ats; sin tablas. Mismo contexto de render, así que los textos coinciden con el HTML.
+- **Restore de snapshot**: en una transacción; las listas de contenido se recrean (ids nuevos),
+  `basics` y los perfiles que coinciden por id se actualizan en su lugar (así los `export_job`
+  siguen apuntando a su perfil); los perfiles creados después del snapshot se borran salvo que
+  tengan exportaciones (RESTRICT), en cuyo caso se conservan. No cambia `is_default`; el nombre
+  del CV se restaura solo si no lo usa otro CV. Round-trip exacto salvo `id`, `created_at` y
+  `updated_at`.
+- Los tests escriben siempre bajo un `CV_ATS_DATA_DIR` temporal (fixture autouse en `conftest`).
+
+## 2026-09-10 — Backend-Validador
+
+- **Registro**: `@rule(id, section, severity={"ats": ..., "mail": ...}, weight, phase)`; `"-"`/`"–"`/
+  clave ausente = no corre en ese destino. La descripción de cada regla es su docstring (fuente de
+  `docs/ATS_RULES.md`, generado con `cv-ats rules --md`; un test exige que el archivo esté al día).
+  Re-registrar la misma función es un no-op; otra función con el mismo id → `ValueError`.
+- **Puntaje**: descuento por regla una sola vez; el total se **redondea hacia abajo**
+  (100 − 12,5 = 87). Hallazgos ordenados por severidad y luego por id de regla.
+- **HTML**: las reglas de estructura ignoran comentarios CSS/HTML (el `ats.css` menciona
+  «position:absolute» en un comentario). `single_column` detecta grid, `grid-template`, columnas
+  CSS, `float` y `position: absolute/fixed`; `no_photo` además `<img>`/`<svg>` en el HTML.
+- **`canonical_headings`**: lista blanca es/en por sección, comparada sin tildes/mayúsculas y con
+  `&` = y/and; un título válido de otra sección no vale (p. ej. «Experiencia» en habilidades).
+- **`dates.format_consistent`**: el perfil ya impone un formato; la regla busca fechas escritas a
+  mano en otro formato (`MM/YYYY` o `mmm YYYY`) en textos libres y, si no hay, en el HTML. Los años
+  sueltos no se revisan (ambiguos). `dates.future` exime vencimiento de certificaciones y la fecha de
+  fin de educación `in_progress` (grado esperado).
+- **`length.min_content`**: si hay ≥ 2 páginas no reporta; con 1 página o sin conteo estima por
+  texto visible: página llena ≈ 2500/2100/1650 caracteres (compacto/normal/amplio, medido con
+  WeasyPrint sobre el CV de ejemplo); < 60% → aviso. `length.pages` usa `ctx.pages` o `pdf.pages`.
+- **`technical.filename`**: regex `Nombre_Apellido_CV[_...].ext` ASCII sin espacios, y la primera
+  pieza debe ser el primer nombre sin tildes. `technical.metadata`: autor = nombre y título contiene
+  el nombre. `photo.*` considera foto incluida si `include_photo` y `photo_asset_id`.
+- **Persistencia**: `ValidationService(session).run_and_save(resume_id, profile_id=None, *, html,
+  pages, pdf, render_html)` hace commit. `services.validation.save_report(session, *, resume_id,
+  profile_id, report)` **no hace commit** (lo usa `ExportService._persist_report` dentro de su unidad
+  de trabajo). La API y el CLI renderizan el HTML final y cuentan páginas con `export.pdf.count_pages`
+  (si falla, `pages=None`).
+- **CLI `validate`**: guarda el reporte; `--profile` resuelve por nombre y luego por destino (misma
+  función que `export`); sale con 1 si el destino es ats y hay errores, 2 si el CV/perfil no existe.
+- Pronombres (resumen/logros) como constantes en `validator/text.py`; verbos en
+  `validator/data/verbs_{es,en}.txt` (243 es: infinitivo + pretérito 1ª y 3ª; 235 en: base + pasado).

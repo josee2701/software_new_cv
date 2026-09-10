@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Body, HTTPException, Response, status
+from fastapi import APIRouter, Body, Response, status
 
 from app.deps import SessionDep
 from app.routers.crud import register_ordered_crud
@@ -116,6 +116,9 @@ def get_snapshot(snapshot_id: int, session: SessionDep) -> SnapshotDetailOut:
     return SnapshotDetailOut.model_validate(ResumeService(session).get_snapshot(snapshot_id))
 
 
-@router.post("/snapshots/{snapshot_id}/restore", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def restore_snapshot(snapshot_id: int) -> None:
-    raise HTTPException(status.HTTP_501_NOT_IMPLEMENTED, "Restaurar versiones aún no implementado")
+@router.post("/snapshots/{snapshot_id}/restore", response_model=ResumeOut)
+def restore_snapshot(snapshot_id: int, session: SessionDep) -> ResumeOut:
+    """Replace the resume content with the snapshot (one transaction)."""
+    service = ResumeService(session)
+    resume = service.restore_snapshot(snapshot_id)
+    return service.get_out(resume.id)

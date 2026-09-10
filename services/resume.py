@@ -18,6 +18,7 @@ from models import (
     Education,
     Experience,
     ExperienceTechnology,
+    ExportJob,
     ExportProfile,
     Language,
     ProfileSection,
@@ -27,12 +28,14 @@ from models import (
     ResumeSnapshot,
     Skill,
     SkillCategory,
+    Technology,
 )
 from models.base import Base
 from models.enums import LinkKind
 from schemas import (
     BasicsUpdate,
     ContactLinkCreate,
+    ExportProfileOut,
     ResumeCreate,
     ResumeOut,
     ResumeUpdate,
@@ -50,12 +53,34 @@ def empty_basics() -> Basics:
     return Basics(full_name="", headline="", email="", phone="", city="", country="CO")
 
 
+_CONTENT_RELATIONS = (
+    "links",
+    "experiences",
+    "education",
+    "skill_categories",
+    "projects",
+    "certifications",
+    "languages",
+)
+
+
+def _column_values(model: type[Base], source: BaseModel) -> dict[str, Any]:
+    """Column fields of ``model`` present in ``source`` (without id/timestamps)."""
+    names = {attr.key for attr in inspect(model).column_attrs} - _SKIP_COLUMNS
+    return {k: v for k, v in source.model_dump().items() if k in names}
+
+
 def _columns(model: type[Base], source: BaseModel, **extra: Any) -> Any:
     """Build a new ``model`` instance from the column fields present in ``source``."""
-    names = {attr.key for attr in inspect(model).column_attrs} - _SKIP_COLUMNS
-    data = {k: v for k, v in source.model_dump().items() if k in names}
+    data = _column_values(model, source)
     data.update(extra)
     return model(**data)
+
+
+def _new_profile(source: ExportProfileOut) -> ExportProfile:
+    profile: ExportProfile = _columns(ExportProfile, source, resume_id=None)
+    profile.sections = [_columns(ProfileSection, s) for s in source.sections]
+    return profile
 
 
 class LinkService(ChildService[ContactLink]):
@@ -174,9 +199,15 @@ class ResumeService(TransactionalService):
         return clone
 
     def _populate(self, target: Resume, src: ResumeOut) -> None:
-        techs = TechnologyService(self.session)
         target.basics = _columns(Basics, src.basics)
-        target.links = [_columns(ContactLink, x) for x in src.links]
+        self._populate_content(target, src)
+        target.profiles = [_new_profile(p) for p in src.profiles]
+
+    def _populate_content(self, target: Resume, src: ResumeOut) -> None:
+        """Add links, experiences, education, skills, projects, certifications, languages."""
+        techs = TechnologyService(self.session)
+        for link in src.links:
+            target.links.append(_columns(ContactLink, link))
         for exp_out in src.experiences:
             exp: Experience = _columns(Experience, exp_out)
             exp.achievements = [_columns(Achievement, a) for a in exp_out.achievements]
@@ -185,10 +216,17 @@ class ResumeService(TransactionalService):
                 for i, n in enumerate(exp_out.technologies)
             ]
             target.experiences.append(exp)
-        target.education = [_columns(Education, x) for x in src.education]
+        for edu in src.education:
+            target.education.append(_columns(Education, edu))
         for cat_out in src.skill_categories:
             cat: SkillCategory = _columns(SkillCategory, cat_out)
-            cat.skills = [_columns(Skill, s) for s in cat_out.skills]
+            skills: list[Skill] = [_columns(Skill, s) for s in cat_out.skills]
+            for skill in skills:
+                if skill.technology_id is not None and (
+                    self.session.get(Technology, skill.technology_id) is None
+                ):
+                    skill.technology_id = None
+            cat.skills = skills
             target.skill_categories.append(cat)
         for proj_out in src.projects:
             proj: Project = _columns(Project, proj_out)
@@ -197,12 +235,77 @@ class ResumeService(TransactionalService):
                 for i, n in enumerate(proj_out.technologies)
             ]
             target.projects.append(proj)
-        target.certifications = [_columns(Certification, x) for x in src.certifications]
-        target.languages = [_columns(Language, x) for x in src.languages]
+        for cert in src.certifications:
+            target.certifications.append(_columns(Certification, cert))
+        for lang in src.languages:
+            target.languages.append(_columns(Language, lang))
+
+    # ------------------------------------------------------------------ restore
+
+    def restore_snapshot(self, snapshot_id: int) -> Resume:
+        """Rebuild the resume from a snapshot payload in one transaction.
+
+        Content lists are recreated (new ids); basics and matching profiles (by id) are
+        updated in place so export jobs keep their profile. ``is_default`` is not touched.
+        """
+        snapshot = self.get_snapshot(snapshot_id)
+        src = ResumeOut.model_validate(snapshot.payload)
+        with self._write():
+            resume = self.get(snapshot.resume_id)
+            if src.name.lower() != resume.name.lower():
+                taken = self.session.scalar(
+                    select(Resume.id).where(
+                        func.lower(Resume.name) == src.name.lower(), Resume.id != resume.id
+                    )
+                )
+                if taken is None:
+                    resume.name = src.name
+            resume.language = src.language
+            resume.notes = src.notes
+            for relation in _CONTENT_RELATIONS:
+                getattr(resume, relation).clear()
+            self.session.flush()
+            self._restore_basics(resume, src)
+            self._restore_profiles(resume, src)
+            with self.session.no_autoflush:
+                self._populate_content(resume, src)
+            self.session.flush()
+        return resume
+
+    def _restore_basics(self, resume: Resume, src: ResumeOut) -> None:
+        if resume.basics is None:
+            resume.basics = empty_basics()
+        values = _column_values(Basics, src.basics)
+        asset_id = values.get("photo_asset_id")
+        if asset_id is not None and self.session.get(Asset, asset_id) is None:
+            values["photo_asset_id"] = None
+        for name, value in values.items():
+            setattr(resume.basics, name, value)
+
+    def _restore_profiles(self, resume: Resume, src: ResumeOut) -> None:
+        wanted = {p.id for p in src.profiles}
+        for profile in list(resume.profiles):
+            if profile.id in wanted:
+                continue
+            used = self.session.scalar(
+                select(ExportJob.id).where(ExportJob.profile_id == profile.id).limit(1)
+            )
+            if used is None:  # profiles with export jobs are kept (RESTRICT)
+                resume.profiles.remove(profile)
+        self.session.flush()
+        current = {p.id: p for p in resume.profiles}
         for prof_out in src.profiles:
-            prof: ExportProfile = _columns(ExportProfile, prof_out, resume_id=None)
-            prof.sections = [_columns(ProfileSection, s) for s in prof_out.sections]
-            target.profiles.append(prof)
+            existing = current.get(prof_out.id)
+            if existing is None:
+                resume.profiles.append(_new_profile(prof_out))
+                continue
+            for name, value in _column_values(ExportProfile, prof_out).items():
+                if name != "resume_id":
+                    setattr(existing, name, value)
+            existing.sections.clear()
+            self.session.flush()
+            existing.sections = [_columns(ProfileSection, s) for s in prof_out.sections]
+        self.session.flush()
 
     # ------------------------------------------------------------------ basics
 

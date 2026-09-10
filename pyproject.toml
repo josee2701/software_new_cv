@@ -70,6 +70,10 @@ files = [
   "app", "models", "validator", "export", "importer", "services", "schemas", "render",
 ]
 
+[[tool.mypy.overrides]]
+module = ["weasyprint", "weasyprint.*"]
+ignore_missing_imports = true  # WeasyPrint no publica tipos (py.typed)
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

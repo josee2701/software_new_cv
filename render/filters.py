@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from datetime import date
 
 MONTHS: dict[str, tuple[str, ...]] = {
@@ -151,6 +152,25 @@ def initials(full_name: str) -> str:
         return _unit_letter(units[0])
     second = units[1] if len(units) <= 3 else units[2]
     return _unit_letter(units[0]) + _unit_letter(second)
+
+
+def _ascii_slug(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", text)
+    plain = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+    return re.sub(r"[^A-Za-z0-9]+", "_", plain).strip("_")
+
+
+def file_stem(full_name: str) -> str:
+    """``Nombre_Apellido`` for export file names: first given name + first surname
+    (same unit rule as :func:`initials`), without accents or spaces."""
+    units = _name_units(full_name)
+    if not units:
+        return ""
+    first = next((w for w in units[0] if w.lower() not in _PARTICLES), units[0][0])
+    parts = [first]
+    if len(units) > 1:
+        parts.append(" ".join(units[1] if len(units) <= 3 else units[2]))
+    return "_".join(p for p in (_ascii_slug(x) for x in parts) if p)
 
 
 def years_label(years: int | None, one: str, many: str) -> str | None:

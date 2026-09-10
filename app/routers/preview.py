@@ -23,8 +23,9 @@ def preview(
     session: SessionDep,
     profile_id: Annotated[int | None, Query()] = None,
     density: Annotated[Density | None, Query()] = None,
+    pages: Annotated[bool, Query(description="Contar páginas (header X-Pages)")] = True,
 ) -> HTMLResponse:
-    """Rendered HTML. ``X-Pages`` header is sent once page counting exists (export/pdf.py)."""
+    """Rendered HTML with the estimated page count in the ``X-Pages`` header."""
     cv = ResumeService(session).get_out(resume_id)
     if profile_id is not None:
         profile = ExportProfileOut.model_validate(
@@ -37,7 +38,7 @@ def preview(
     if density is not None:
         profile = profile.model_copy(update={"density": density})
     try:
-        result = render(cv, profile, for_preview=True)
+        result = render(cv, profile, for_preview=True, with_pages=pages)
     except TemplateNotFound as exc:
         raise HTTPException(
             status.HTTP_503_SERVICE_UNAVAILABLE, "Plantilla de render aún no disponible"
