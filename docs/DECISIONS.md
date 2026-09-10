@@ -146,3 +146,27 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
   ("María de los Ángeles Pérez" → "MÁ", "Juan de la Cruz Gómez Ruiz" → "JG").
 - El trabajo se movió a la copia en disco interno (`/home/jose/cv-ats-rescate-1551`) por el cuelgue
   del driver `ntfs3` en el disco externo; `tests/test_models.py` se reescribió (quedó truncado).
+
+## 2026-09-10 — Jefe (cierre ronda 1, interfaz validador/export)
+
+- **Formato de fecha único**: el `date_format` del perfil se aplica a TODAS las secciones
+  (experiencia, educación, proyectos, certificaciones). Motivo: regla `dates.format_consistent`
+  (error en ats). Los fixtures de Diseño con `YYYY` en educación son solo ilustrativos.
+- **Textos de render en Python** (etiquetas de enlaces, sufijo de `doc_title`, países ISO→nombre):
+  se aceptan en `render/`; no se mueven al i18n por ahora.
+- **Verbos de acción**: `validator/data/verbs_es.txt` incluye infinitivo y pretérito en 1ª persona
+  ("Lideré", "Reduje", "Diseñé") además de 3ª ("Lideró"). Es la forma habitual en CVs en español y
+  no cuenta como pronombre para `content.no_pronouns` / `summary_first_person`.
+- **Firma de reglas** (desvío de §9.1): `def regla(ctx: RuleContext) -> list[Hit]` en lugar de
+  `(cv, profile)`, porque `structure.*`, `length.*` y `technical.*` necesitan HTML, páginas o
+  `PdfInfo`. La severidad por destino la asigna el motor desde el decorador; `"–"` en la tabla de
+  §9.2 = la regla no corre para ese destino. Interfaz en `validator/types.py` (del jefe).
+- **Puntaje**: cada regla descuenta su peso **una sola vez** por reporte, aunque genere varios
+  hallazgos (error = peso, warning = peso/2, info = 0; mínimo 0). Motivo: evitar que un CV con
+  muchos logros quede en 0 por una sola regla.
+- **Fases**: `engine.run(ctx)` corre las reglas `PRE` siempre y las `POST` solo si `ctx.pdf` no es
+  None. Export: corrida pre (sin pdf) → bloqueo si ats con errores → genera PDF → corrida completa
+  (con html, pages y pdf) → ese es el reporte que se persiste.
+- **Dos agentes de Backend en paralelo** para Fase 2 (resto) y Fase 3: *Backend-Export* y
+  *Backend-Validador*, con carpetas disjuntas; archivos compartidos (`app/cli.py`, `app/main.py`,
+  `app/routers/pending.py`, `docs/DECISIONS.md`) solo con ediciones puntuales releyendo antes.
