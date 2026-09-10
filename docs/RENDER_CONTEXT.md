@@ -49,6 +49,7 @@ ctx = {
     "location": "Bogotá, Colombia",     # ciudad[, región], país (nombre) — "" si no hay
     "summary": "Texto…",                # "" si vacío
     "photo_src": None,                  # data URI "data:image/jpeg;base64,..." o None
+    "initials": "JP",                   # 1ª letra del primer nombre + 1ª del primer apellido
   },
 
   "links": [                            # ya ordenados
@@ -57,8 +58,8 @@ ctx = {
   ],
 
   "sections": [                         # SOLO visibles, en el orden del perfil, con ≥1 ítem
-    {"key": "summary",   "title": "RESUMEN PROFESIONAL", "items": []},  # usar basics.summary
-    {"key": "experience","title": "EXPERIENCIA PROFESIONAL", "items": [Experience, ...]},
+    {"key": "summary",   "title": "RESUMEN PROFESIONAL", "entries": []},  # usar basics.summary
+    {"key": "experience","title": "EXPERIENCIA PROFESIONAL", "entries": [Experience, ...]},
     ...
   ],
   "sections_by_key": {"experience": <misma sección>, ...},  # acceso directo (útil en mail)
@@ -71,13 +72,15 @@ La sección `summary` solo aparece si `basics.summary` no está vacío.
 
 ## Ítems por sección
 
-Todos los ítems ya están filtrados por `show_in` y ordenados. Campos opcionales llegan como `""`
+La lista va en la clave `entries` (no `items`: en Jinja `section.items` resolvería al método
+`dict.items`). Todos los ítems ya están filtrados por `show_in` y ordenados. Campos opcionales llegan como `""`
 o lista vacía (nunca `None`), salvo donde se indica.
 
 ### experience
 ```python
 {"id": 3, "role": "Desarrollador Backend", "company": "Banco X",
- "employment_type": "full-time",         # "" si no
+ "employment_type": "full-time",         # "" si no (valor crudo)
+ "employment_type_label": "Tiempo completo",  # localizado; "" si no hay
  "location": "Bogotá, Colombia",         # "" si no; si remote: "Remoto" o "Bogotá · Remoto"
  "dates": "03/2021 – Actual",            # ya formateado con date_format + idioma, guion "–"
  "description": "",
@@ -89,14 +92,17 @@ o lista vacía (nunca `None`), salvo donde se indica.
 ```python
 {"id": 1, "degree": "Ingeniería de Sistemas", "institution": "Universidad Nacional",
  "field": "", "location": "Bogotá", "dates": "2014 – 2019",   # "" si sin fechas
+ # si in_progress: dates ya trae el fin localizado, p.ej. "2023 – En curso" / "2023 – In progress".
+ # La plantilla NO añade t.in_progress; el booleano queda solo para estilo.
  "in_progress": False, "gpa": "", "description": ""}
 ```
 
 ### skills
 ```python
 {"id": 2, "category": "Lenguajes",
- "skills": [{"name": "Python", "level": "expert", "level_label": "Experto", "years": 6}],
- # level / level_label / years pueden ser None
+ "skills": [{"name": "Python", "level": "expert", "level_label": "Experto", "years": 6,
+             "years_label": "6 años"}],   # "1 año" / "6 years"
+ # level / level_label / years / years_label pueden ser None
  "names": "Python, Go, SQL"}              # join listo para ats ("Categoría: names")
 ```
 En `ats` la plantilla **no** muestra niveles (regla `content.skills_no_levels_ats`).
@@ -138,3 +144,11 @@ Grid 32% / 68%. Temas en `render/templates/mail/themes/{slate,ocean,graphite}.cs
 `--accent`, `--sidebar-bg`, `--text`, `--muted`, `--font-head`, `--font-body`. Si
 `profile.accent_color` no es None, base.html emite `:root{--accent: {{ profile.accent_color }}}`
 después del tema. Texto real, nunca rasterizado. Iconos SVG inline permitidos.
+
+## Notas transversales (jefe, 2026-09-10)
+
+- `profile.font_family` llega siempre (default `Arial`), pero la plantilla `mail` lo **ignora**:
+  las fuentes del correo las define el tema.
+- Teléfono: las plantillas muestran `phone_display`. `export/verify.py` y la regla
+  `contact.phone_present` deben comparar el teléfono **normalizando a solo dígitos** (y `+`), no
+  el literal E.164.

@@ -1,0 +1,79 @@
+/* Plantilla ATS — spec §8.2. Reglas duras: una columna, sin tablas/imágenes/iconos,
+   sin position:absolute, sin contenido en márgenes de página, colores solo #000 / #333. */
+
+/* Página y densidad: márgenes 14 / 18 / 22 mm vía páginas con nombre. */
+@page { size: Letter; margin: 18mm; }
+@page compact { size: Letter; margin: 14mm; }
+@page wide { size: Letter; margin: 22mm; }
+
+html { color: #000; background: #fff; }
+
+body {
+  margin: 0;
+  font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.32;
+  color: #000;
+  text-align: left;
+  orphans: 3;
+  widows: 3;
+}
+body.density-compact { page: compact; font-size: 9.5pt; line-height: 1.28; }
+body.density-normal { font-size: 10.5pt; }
+body.density-wide { page: wide; font-size: 11.5pt; line-height: 1.36; }
+
+/* Fuente según profile.font_family (solo fuentes seguras para ATS). */
+body[data-font="Calibri"] { font-family: Calibri, Carlito, sans-serif; }
+body[data-font="Helvetica"] { font-family: Helvetica, Arial, "Liberation Sans", sans-serif; }
+body[data-font="Georgia"] { font-family: Georgia, "Liberation Serif", serif; }
+
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+a { color: #000; text-decoration: none; }
+
+/* Encabezado */
+.cv-header { margin-bottom: 0.4em; }
+.name { font-size: 1.95em; font-weight: bold; line-height: 1.1; color: #000; }
+.headline { margin-top: 0.2em; font-size: 1.1em; color: #333; }
+.contact { margin-top: 0.35em; font-size: 0.95em; color: #333; }
+.contact a { color: #333; }
+/* Cada dato de contacto es indivisible: una URL o un teléfono nunca se parten en dos líneas. */
+.ci { white-space: nowrap; }
+
+/* Secciones */
+.section-title {
+  margin: 1.05em 0 0.5em;
+  padding-bottom: 0.18em;
+  border-bottom: 0.75pt solid #333;
+  font-size: 1.05em;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  color: #000;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* Ítems (experiencia, educación, proyectos, certificaciones) */
+.item {
+  margin-bottom: 0.8em;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.item:last-child { margin-bottom: 0; }
+.item-short { margin-bottom: 0.45em; }
+.item-title { font-size: 1em; font-weight: bold; color: #000; page-break-after: avoid; break-after: avoid; }
+
+.meta { margin-top: 0.1em; color: #333; }
+/* Separador " · " entre piezas presentes (el texto sale en el PDF como texto real). */
+.meta > span + span::before { content: "· "; }
+
+.desc { margin-top: 0.25em; }
+.tech { margin-top: 0.25em; color: #333; }
+.label { font-weight: bold; color: #000; }
+
+ul { margin-top: 0.3em; padding-left: 1.25em; list-style-type: disc; }
+li { margin-bottom: 0.18em; padding-left: 0.15em; }
+li:last-child { margin-bottom: 0; }
+
+.summary { margin: 0; }
+.line { margin-bottom: 0.25em; }
+.line:last-child { margin-bottom: 0; }

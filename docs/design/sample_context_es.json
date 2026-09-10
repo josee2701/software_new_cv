@@ -1,0 +1,645 @@
+{
+  "lang": "es",
+  "destination": "ats",
+  "for_preview": false,
+  "doc_title": "Santiago Restrepo Mejía — Hoja de vida",
+  "profile": {
+    "name": "Plataforma",
+    "theme": null,
+    "accent_color": null,
+    "density": "normal",
+    "font_family": "Arial",
+    "include_photo": false,
+    "max_pages": 2
+  },
+  "t": {
+    "present": "Actual",
+    "remote": "Remoto",
+    "contact": "Contacto",
+    "technologies": "Tecnologías",
+    "credential": "Credencial",
+    "expires": "Vence",
+    "gpa": "Promedio",
+    "in_progress": "En curso"
+  },
+  "basics": {
+    "full_name": "Santiago Restrepo Mejía",
+    "headline": "Ingeniero de Sistemas · Backend Python y Go",
+    "email": "santiago.restrepo@example.com",
+    "phone": "+573104567890",
+    "phone_display": "+57 310 456 7890",
+    "location": "Medellín, Antioquia, Colombia",
+    "summary": "Ingeniero de sistemas con 8 años de experiencia diseñando y operando servicios backend de alto tráfico en banca y comercio electrónico. Especialista en Python (FastAPI, Django) y Go, arquitectura de microservicios, PostgreSQL y AWS. He liderado migraciones de monolitos a servicios desacoplados, reducido costos de infraestructura y mejorado la confiabilidad de plataformas de pagos. Busco equipos que valoren la calidad, la observabilidad y la entrega continua.",
+    "photo_src": null
+  },
+  "links": [
+    {
+      "kind": "linkedin",
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/santiago-restrepo-mejia",
+      "display": "linkedin.com/in/santiago-restrepo-mejia"
+    },
+    {
+      "kind": "github",
+      "label": "GitHub",
+      "url": "https://github.com/srestrepo",
+      "display": "github.com/srestrepo"
+    }
+  ],
+  "sections": [
+    {
+      "key": "summary",
+      "title": "RESUMEN PROFESIONAL",
+      "items": []
+    },
+    {
+      "key": "experience",
+      "title": "EXPERIENCIA PROFESIONAL",
+      "items": [
+        {
+          "id": 3,
+          "role": "Ingeniero Backend Senior",
+          "company": "Banco Andino Digital",
+          "employment_type": "full-time",
+          "location": "Medellín · Remoto",
+          "dates": "03/2022 – Actual",
+          "description": "Equipo de plataforma de pagos digitales (12 personas).",
+          "achievements": [
+            "Lideré la migración del motor de pagos de un monolito Java a 9 microservicios en Python y Go, reduciendo la latencia p95 de 820 ms a 190 ms.",
+            "Diseñé un pipeline de eventos con Kafka que procesa 4,5 millones de transacciones diarias con 99,98% de disponibilidad.",
+            "Reduje 32% el costo mensual de AWS optimizando instancias, reservas y políticas de autoescalado en EKS.",
+            "Implementé trazabilidad distribuida con OpenTelemetry, bajando el tiempo medio de resolución de incidentes de 3 h a 40 min.",
+            "Mentoré a 4 desarrolladores junior; 2 fueron promovidos a semi-senior en menos de 12 meses."
+          ],
+          "technologies": [
+            "Python",
+            "Go",
+            "FastAPI",
+            "PostgreSQL",
+            "Kafka",
+            "AWS",
+            "Kubernetes"
+          ]
+        },
+        {
+          "id": 2,
+          "role": "Desarrollador Backend",
+          "company": "Mercado Vivo S.A.S.",
+          "employment_type": "full-time",
+          "location": "Bogotá, Colombia",
+          "dates": "07/2019 – 02/2022",
+          "description": "",
+          "achievements": [
+            "Desarrollé la API de catálogo y checkout en Django REST Framework para 1,2 millones de usuarios activos mensuales.",
+            "Aumenté 18% la conversión del checkout eliminando 3 pasos y cacheando precios con Redis.",
+            "Automaticé la conciliación de pedidos con Celery, ahorrando 60 horas de trabajo manual al mes.",
+            "Elevé la cobertura de pruebas de 35% a 82% e introduje CI/CD con GitHub Actions."
+          ],
+          "technologies": [
+            "Python",
+            "Django",
+            "PostgreSQL",
+            "Redis",
+            "Celery",
+            "Docker"
+          ]
+        },
+        {
+          "id": 1,
+          "role": "Desarrollador de Software",
+          "company": "Softlogic Consultores",
+          "employment_type": "full-time",
+          "location": "Medellín, Colombia",
+          "dates": "01/2017 – 06/2019",
+          "description": "",
+          "achievements": [
+            "Construí 6 integraciones REST y SOAP entre ERP y sistemas de facturación electrónica de la DIAN.",
+            "Optimicé consultas SQL críticas, reduciendo la generación de reportes de 15 min a 90 s.",
+            "Levanté requisitos con 5 clientes de los sectores salud y logística y los traduje a historias de usuario."
+          ],
+          "technologies": [
+            "Python",
+            "Flask",
+            "MySQL",
+            "JavaScript"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "education",
+      "title": "EDUCACIÓN",
+      "items": [
+        {
+          "id": 2,
+          "degree": "Especialización en Arquitectura de Software",
+          "institution": "Universidad EAFIT",
+          "field": "",
+          "location": "Medellín",
+          "dates": "2021 – 2022",
+          "in_progress": false,
+          "gpa": "",
+          "description": ""
+        },
+        {
+          "id": 1,
+          "degree": "Ingeniería de Sistemas",
+          "institution": "Universidad Nacional de Colombia",
+          "field": "",
+          "location": "Medellín",
+          "dates": "2011 – 2016",
+          "in_progress": false,
+          "gpa": "4,2 / 5,0",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "key": "skills",
+      "title": "HABILIDADES",
+      "items": [
+        {
+          "id": 1,
+          "category": "Lenguajes",
+          "skills": [
+            {
+              "name": "Python",
+              "level": "expert",
+              "level_label": "Experto",
+              "years": 8
+            },
+            {
+              "name": "Go",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 3
+            },
+            {
+              "name": "SQL",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 8
+            },
+            {
+              "name": "TypeScript",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 2
+            }
+          ],
+          "names": "Python, Go, SQL, TypeScript"
+        },
+        {
+          "id": 2,
+          "category": "Frameworks y datos",
+          "skills": [
+            {
+              "name": "FastAPI",
+              "level": "expert",
+              "level_label": "Experto",
+              "years": 4
+            },
+            {
+              "name": "Django",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 5
+            },
+            {
+              "name": "PostgreSQL",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 7
+            },
+            {
+              "name": "Redis",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 5
+            },
+            {
+              "name": "Kafka",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 3
+            }
+          ],
+          "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
+        },
+        {
+          "id": 3,
+          "category": "Cloud & DevOps",
+          "skills": [
+            {
+              "name": "AWS",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 4
+            },
+            {
+              "name": "Docker",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 6
+            },
+            {
+              "name": "Kubernetes",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 3
+            },
+            {
+              "name": "Terraform",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 2
+            },
+            {
+              "name": "GitHub Actions",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 4
+            }
+          ],
+          "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
+        }
+      ]
+    },
+    {
+      "key": "projects",
+      "title": "PROYECTOS",
+      "items": [
+        {
+          "id": 2,
+          "name": "pagos-sandbox",
+          "role": "Autor y mantenedor",
+          "description": "Simulador open source de pasarelas de pago latinoamericanas (PSE, Nequi, tarjetas) para pruebas de integración; 350 estrellas en GitHub y usado por 3 fintech.",
+          "url": "https://github.com/srestrepo/pagos-sandbox",
+          "url_display": "github.com/srestrepo/pagos-sandbox",
+          "dates": "2023 – 2024",
+          "technologies": [
+            "Go",
+            "Docker",
+            "OpenAPI"
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Aire Medellín",
+          "role": "Colaborador",
+          "description": "Plataforma ciudadana que agrega datos de 40 sensores de calidad del aire y publica alertas por Telegram a más de 3.000 suscriptores.",
+          "url": "",
+          "url_display": "",
+          "dates": "2021",
+          "technologies": [
+            "Python",
+            "FastAPI",
+            "TimescaleDB"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "certifications",
+      "title": "CERTIFICACIONES",
+      "items": [
+        {
+          "id": 2,
+          "name": "AWS Certified Solutions Architect – Associate",
+          "issuer": "Amazon Web Services",
+          "date": "05/2024",
+          "expiry": "05/2027",
+          "credential_id": "AWS-SAA-8F3K2L",
+          "url": "",
+          "url_display": ""
+        },
+        {
+          "id": 1,
+          "name": "Certified Kubernetes Application Developer (CKAD)",
+          "issuer": "The Linux Foundation",
+          "date": "02/2025",
+          "expiry": "02/2027",
+          "credential_id": "",
+          "url": "https://www.credly.com/badges/ckad-srestrepo",
+          "url_display": "credly.com/badges/ckad-srestrepo"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "title": "IDIOMAS",
+      "items": [
+        {
+          "id": 1,
+          "name": "Español",
+          "level": "native",
+          "level_label": "Nativo"
+        },
+        {
+          "id": 2,
+          "name": "Inglés",
+          "level": "C1",
+          "level_label": "C1 — Avanzado"
+        }
+      ]
+    }
+  ],
+  "sections_by_key": {
+    "summary": {
+      "key": "summary",
+      "title": "RESUMEN PROFESIONAL",
+      "items": []
+    },
+    "experience": {
+      "key": "experience",
+      "title": "EXPERIENCIA PROFESIONAL",
+      "items": [
+        {
+          "id": 3,
+          "role": "Ingeniero Backend Senior",
+          "company": "Banco Andino Digital",
+          "employment_type": "full-time",
+          "location": "Medellín · Remoto",
+          "dates": "03/2022 – Actual",
+          "description": "Equipo de plataforma de pagos digitales (12 personas).",
+          "achievements": [
+            "Lideré la migración del motor de pagos de un monolito Java a 9 microservicios en Python y Go, reduciendo la latencia p95 de 820 ms a 190 ms.",
+            "Diseñé un pipeline de eventos con Kafka que procesa 4,5 millones de transacciones diarias con 99,98% de disponibilidad.",
+            "Reduje 32% el costo mensual de AWS optimizando instancias, reservas y políticas de autoescalado en EKS.",
+            "Implementé trazabilidad distribuida con OpenTelemetry, bajando el tiempo medio de resolución de incidentes de 3 h a 40 min.",
+            "Mentoré a 4 desarrolladores junior; 2 fueron promovidos a semi-senior en menos de 12 meses."
+          ],
+          "technologies": [
+            "Python",
+            "Go",
+            "FastAPI",
+            "PostgreSQL",
+            "Kafka",
+            "AWS",
+            "Kubernetes"
+          ]
+        },
+        {
+          "id": 2,
+          "role": "Desarrollador Backend",
+          "company": "Mercado Vivo S.A.S.",
+          "employment_type": "full-time",
+          "location": "Bogotá, Colombia",
+          "dates": "07/2019 – 02/2022",
+          "description": "",
+          "achievements": [
+            "Desarrollé la API de catálogo y checkout en Django REST Framework para 1,2 millones de usuarios activos mensuales.",
+            "Aumenté 18% la conversión del checkout eliminando 3 pasos y cacheando precios con Redis.",
+            "Automaticé la conciliación de pedidos con Celery, ahorrando 60 horas de trabajo manual al mes.",
+            "Elevé la cobertura de pruebas de 35% a 82% e introduje CI/CD con GitHub Actions."
+          ],
+          "technologies": [
+            "Python",
+            "Django",
+            "PostgreSQL",
+            "Redis",
+            "Celery",
+            "Docker"
+          ]
+        },
+        {
+          "id": 1,
+          "role": "Desarrollador de Software",
+          "company": "Softlogic Consultores",
+          "employment_type": "full-time",
+          "location": "Medellín, Colombia",
+          "dates": "01/2017 – 06/2019",
+          "description": "",
+          "achievements": [
+            "Construí 6 integraciones REST y SOAP entre ERP y sistemas de facturación electrónica de la DIAN.",
+            "Optimicé consultas SQL críticas, reduciendo la generación de reportes de 15 min a 90 s.",
+            "Levanté requisitos con 5 clientes de los sectores salud y logística y los traduje a historias de usuario."
+          ],
+          "technologies": [
+            "Python",
+            "Flask",
+            "MySQL",
+            "JavaScript"
+          ]
+        }
+      ]
+    },
+    "education": {
+      "key": "education",
+      "title": "EDUCACIÓN",
+      "items": [
+        {
+          "id": 2,
+          "degree": "Especialización en Arquitectura de Software",
+          "institution": "Universidad EAFIT",
+          "field": "",
+          "location": "Medellín",
+          "dates": "2021 – 2022",
+          "in_progress": false,
+          "gpa": "",
+          "description": ""
+        },
+        {
+          "id": 1,
+          "degree": "Ingeniería de Sistemas",
+          "institution": "Universidad Nacional de Colombia",
+          "field": "",
+          "location": "Medellín",
+          "dates": "2011 – 2016",
+          "in_progress": false,
+          "gpa": "4,2 / 5,0",
+          "description": ""
+        }
+      ]
+    },
+    "skills": {
+      "key": "skills",
+      "title": "HABILIDADES",
+      "items": [
+        {
+          "id": 1,
+          "category": "Lenguajes",
+          "skills": [
+            {
+              "name": "Python",
+              "level": "expert",
+              "level_label": "Experto",
+              "years": 8
+            },
+            {
+              "name": "Go",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 3
+            },
+            {
+              "name": "SQL",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 8
+            },
+            {
+              "name": "TypeScript",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 2
+            }
+          ],
+          "names": "Python, Go, SQL, TypeScript"
+        },
+        {
+          "id": 2,
+          "category": "Frameworks y datos",
+          "skills": [
+            {
+              "name": "FastAPI",
+              "level": "expert",
+              "level_label": "Experto",
+              "years": 4
+            },
+            {
+              "name": "Django",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 5
+            },
+            {
+              "name": "PostgreSQL",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 7
+            },
+            {
+              "name": "Redis",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 5
+            },
+            {
+              "name": "Kafka",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 3
+            }
+          ],
+          "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
+        },
+        {
+          "id": 3,
+          "category": "Cloud & DevOps",
+          "skills": [
+            {
+              "name": "AWS",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 4
+            },
+            {
+              "name": "Docker",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 6
+            },
+            {
+              "name": "Kubernetes",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 3
+            },
+            {
+              "name": "Terraform",
+              "level": "intermediate",
+              "level_label": "Intermedio",
+              "years": 2
+            },
+            {
+              "name": "GitHub Actions",
+              "level": "advanced",
+              "level_label": "Avanzado",
+              "years": 4
+            }
+          ],
+          "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
+        }
+      ]
+    },
+    "projects": {
+      "key": "projects",
+      "title": "PROYECTOS",
+      "items": [
+        {
+          "id": 2,
+          "name": "pagos-sandbox",
+          "role": "Autor y mantenedor",
+          "description": "Simulador open source de pasarelas de pago latinoamericanas (PSE, Nequi, tarjetas) para pruebas de integración; 350 estrellas en GitHub y usado por 3 fintech.",
+          "url": "https://github.com/srestrepo/pagos-sandbox",
+          "url_display": "github.com/srestrepo/pagos-sandbox",
+          "dates": "2023 – 2024",
+          "technologies": [
+            "Go",
+            "Docker",
+            "OpenAPI"
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Aire Medellín",
+          "role": "Colaborador",
+          "description": "Plataforma ciudadana que agrega datos de 40 sensores de calidad del aire y publica alertas por Telegram a más de 3.000 suscriptores.",
+          "url": "",
+          "url_display": "",
+          "dates": "2021",
+          "technologies": [
+            "Python",
+            "FastAPI",
+            "TimescaleDB"
+          ]
+        }
+      ]
+    },
+    "certifications": {
+      "key": "certifications",
+      "title": "CERTIFICACIONES",
+      "items": [
+        {
+          "id": 2,
+          "name": "AWS Certified Solutions Architect – Associate",
+          "issuer": "Amazon Web Services",
+          "date": "05/2024",
+          "expiry": "05/2027",
+          "credential_id": "AWS-SAA-8F3K2L",
+          "url": "",
+          "url_display": ""
+        },
+        {
+          "id": 1,
+          "name": "Certified Kubernetes Application Developer (CKAD)",
+          "issuer": "The Linux Foundation",
+          "date": "02/2025",
+          "expiry": "02/2027",
+          "credential_id": "",
+          "url": "https://www.credly.com/badges/ckad-srestrepo",
+          "url_display": "credly.com/badges/ckad-srestrepo"
+        }
+      ]
+    },
+    "languages": {
+      "key": "languages",
+      "title": "IDIOMAS",
+      "items": [
+        {
+          "id": 1,
+          "name": "Español",
+          "level": "native",
+          "level_label": "Nativo"
+        },
+        {
+          "id": 2,
+          "name": "Inglés",
+          "level": "C1",
+          "level_label": "C1 — Avanzado"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+/* Tema ocean — azul profundo. Sidebar azul marino con texto claro, acento cian. */
+:root {
+  --accent: #0b7bb0;
+  --sidebar-bg: #0f3a5c;
+  --text: #13293d;
+  --muted: #536a80;
+  --font-head: "Source Sans 3", "Source Sans Pro", Calibri, Carlito, "Liberation Sans", sans-serif;
+  --font-body: "Source Sans 3", "Source Sans Pro", Calibri, Carlito, "Liberation Sans", sans-serif;
+  --rule: #cfdde9;
+  --name-color: #0f3a5c;
+  --sidebar-text: #eef5fb;
+  --sidebar-muted: #a9c3d8;
+  --sidebar-head: #ffffff;
+  --sidebar-accent: #4cc3e6;
+  --icon-bg: #1f6fa0;
+  --icon-border: #4cc3e6;
+  --meter-track: #2b5677;
+  --chip-bg: #eaf4fa;
+  --chip-border: #c4dcec;
+  --chip-text: #0f4b72;
+  --photo-ring: #4cc3e6;
+  --photo-radius: 50%;
+}
+.theme-ocean .name { font-weight: 800; letter-spacing: -0.015em; }

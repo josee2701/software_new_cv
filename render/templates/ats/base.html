@@ -1,0 +1,128 @@
+{#- Plantilla ATS (spec §8.2). Una columna, texto plano, sin tablas/imágenes/iconos.
+    Contrato de datos: docs/RENDER_CONTEXT.md. Sin lógica de formato: todo llega formateado. -#}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ doc_title }}</title>
+<meta name="author" content="{{ basics.full_name }}">
+<style>
+{% include "ats/ats.css" %}
+</style>
+{%- if for_preview %}
+<style>
+{% include "ats/preview.css" %}
+</style>
+{%- endif %}
+</head>
+<body class="density-{{ profile.density }}" data-font="{{ profile.font_family }}">
+<header class="cv-header" data-entity="basics">
+  <h1 class="name">{{ basics.full_name }}</h1>
+  {%- if basics.headline %}
+  <p class="headline">{{ basics.headline }}</p>
+  {%- endif %}
+  <p class="contact"><span class="ci">{{ basics.email }}</span> | <span class="ci">{{ basics.phone_display }}</span>
+    {%- if basics.location %} | <span class="ci">{{ basics.location }}</span>{% endif %}
+    {%- for link in links %} | <a class="ci" href="{{ link.url }}">{{ link.display }}</a>{% endfor %}</p>
+</header>
+{%- for section in sections %}
+
+<section class="section section-{{ section.key }}">
+  <h2 class="section-title">{{ section.title }}</h2>
+
+  {%- if section.key == "summary" %}
+  <p class="summary" data-entity="basics">{{ basics.summary }}</p>
+
+  {%- elif section.key == "experience" %}
+  {%- for item in section["items"] %}
+  <article class="item" data-entity="experience" data-entity-id="{{ item.id }}">
+    <h3 class="item-title">{{ item.role }} — {{ item.company }}</h3>
+    <p class="meta">
+      {% if item.location %}<span>{{ item.location }}</span>{% endif %}
+      <span>{{ item.dates }}</span>
+    </p>
+    {%- if item.description %}
+    <p class="desc">{{ item.description }}</p>
+    {%- endif %}
+    {%- if item.achievements %}
+    <ul>
+      {%- for achievement in item.achievements %}
+      <li>{{ achievement }}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    {%- if item.technologies %}
+    <p class="tech"><span class="label">{{ t.technologies }}:</span> {% for tech in item.technologies %}{{ tech }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {%- endif %}
+  </article>
+  {%- endfor %}
+
+  {%- elif section.key == "education" %}
+  {%- for item in section["items"] %}
+  <article class="item" data-entity="education" data-entity-id="{{ item.id }}">
+    <h3 class="item-title">{{ item.degree }} — {{ item.institution }}</h3>
+    {%- if item.location or item.dates or item.in_progress %}
+    <p class="meta">
+      {% if item.location %}<span>{{ item.location }}</span>{% endif %}
+      {% if item.dates %}<span>{{ item.dates }}</span>{% endif %}
+      {% if item.in_progress %}<span>{{ t.in_progress }}</span>{% endif %}
+    </p>
+    {%- endif %}
+    {%- if item.field or item.gpa %}
+    <p class="meta">
+      {% if item.field %}<span>{{ item.field }}</span>{% endif %}
+      {% if item.gpa %}<span>{{ t.gpa }}: {{ item.gpa }}</span>{% endif %}
+    </p>
+    {%- endif %}
+    {%- if item.description %}
+    <p class="desc">{{ item.description }}</p>
+    {%- endif %}
+  </article>
+  {%- endfor %}
+
+  {%- elif section.key == "skills" %}
+  {%- for item in section["items"] %}
+  <p class="line" data-entity="skill_category" data-entity-id="{{ item.id }}"><span class="label">{{ item.category }}:</span> {{ item.names }}</p>
+  {%- endfor %}
+
+  {%- elif section.key == "projects" %}
+  {%- for item in section["items"] %}
+  <article class="item" data-entity="project" data-entity-id="{{ item.id }}">
+    <h3 class="item-title">{{ item.name }}{% if item.role %} — {{ item.role }}{% endif %}</h3>
+    {%- if item.dates or item.url %}
+    <p class="meta">
+      {% if item.dates %}<span>{{ item.dates }}</span>{% endif %}
+      {% if item.url %}<span><a href="{{ item.url }}">{{ item.url_display }}</a></span>{% endif %}
+    </p>
+    {%- endif %}
+    <p class="desc">{{ item.description }}</p>
+    {%- if item.technologies %}
+    <p class="tech"><span class="label">{{ t.technologies }}:</span> {% for tech in item.technologies %}{{ tech }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {%- endif %}
+  </article>
+  {%- endfor %}
+
+  {%- elif section.key == "certifications" %}
+  {%- for item in section["items"] %}
+  <article class="item item-short" data-entity="certification" data-entity-id="{{ item.id }}">
+    <h3 class="item-title">{{ item.name }} — {{ item.issuer }}</h3>
+    {%- if item.date or item.expiry or item.credential_id or item.url %}
+    <p class="meta">
+      {% if item.date %}<span>{{ item.date }}</span>{% endif %}
+      {% if item.expiry %}<span>{{ t.expires }}: {{ item.expiry }}</span>{% endif %}
+      {% if item.credential_id %}<span>{{ t.credential }}: {{ item.credential_id }}</span>{% endif %}
+      {% if item.url %}<span><a href="{{ item.url }}">{{ item.url_display }}</a></span>{% endif %}
+    </p>
+    {%- endif %}
+  </article>
+  {%- endfor %}
+
+  {%- elif section.key == "languages" %}
+  {%- for item in section["items"] %}
+  <p class="line" data-entity="language" data-entity-id="{{ item.id }}"><span class="label">{{ item.name }}:</span> {{ item.level_label }}</p>
+  {%- endfor %}
+  {%- endif %}
+</section>
+{%- endfor %}
+</body>
+</html>

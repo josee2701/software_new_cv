@@ -1,0 +1,346 @@
+/* Plantilla MAIL — spec §8.3. Estructura y ritmo; los colores y fuentes vienen del tema
+   (themes/*.css) vía variables. Unidades físicas (mm/pt) para que el PDF sea predecible. */
+
+/* Valores por defecto (el tema los sobrescribe; accent_color del perfil sobrescribe --accent). */
+:root {
+  --accent: #36597a;
+  --sidebar-bg: #eaeef3;
+  --text: #1d2733;
+  --muted: #5a6878;
+  --font-head: Georgia, "Liberation Serif", serif;
+  --font-body: Calibri, Carlito, "Liberation Sans", sans-serif;
+  --page-bg: #ffffff;
+  --rule: #d3dae2;
+  --name-color: var(--text);
+  --sidebar-text: #1d2733;
+  --sidebar-muted: #56687a;
+  --sidebar-head: #1d2733;
+  --sidebar-accent: var(--accent);
+  --icon-bg: var(--accent);
+  --icon-border: transparent;
+  --meter-track: #cfd7e0;
+  --chip-bg: transparent;
+  --chip-border: #c9d2dc;
+  --chip-text: #3b4856;
+  --photo-ring: #ffffff;
+  --photo-radius: 50%;
+}
+
+/* La franja de la sidebar se pinta en la página: continúa en la página 2+ aunque el contenido
+   de la sidebar termine antes. Márgenes laterales 0: el grid ocupa el ancho completo. */
+@page {
+  size: Letter;
+  margin: 13mm 0 12mm 0;
+  background: linear-gradient(to right, var(--sidebar-bg) 32%, var(--page-bg) 32%);
+}
+@page compact { size: Letter; margin: 10mm 0 9mm 0; }
+@page wide { size: Letter; margin: 16mm 0 15mm 0; }
+
+/* Sin fondo en html/body al imprimir: taparía el degradado de @page. */
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 9.6pt;
+  line-height: 1.4;
+  color: var(--text);
+  orphans: 2;
+  widows: 2;
+}
+body.density-compact { page: compact; font-size: 8.9pt; line-height: 1.34; }
+body.density-wide { page: wide; font-size: 10.4pt; line-height: 1.45; }
+
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+
+.cv {
+  display: grid;
+  grid-template-columns: 32% 68%;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  min-width: 0;
+  padding: 0 6.5mm 0 8mm;
+  color: var(--sidebar-text);
+}
+
+.photo { margin: 0 0 7mm; text-align: center; }
+.photo img {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40mm;
+  height: 40mm;
+  object-fit: cover;
+  border-radius: var(--photo-radius);
+  border: 1.1mm solid var(--photo-ring);
+}
+/* Sin foto: no hay hueco. Solo un acento que alinea la sidebar con el nombre del main. */
+.no-photo {
+  width: 12mm;
+  height: 1.2mm;
+  margin: 3.2mm 0 9mm;
+  background: var(--sidebar-accent);
+}
+
+.side-block { margin-bottom: 7mm; }
+.side-title {
+  margin-bottom: 3.4mm;
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  font-weight: bold;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sidebar-head);
+  break-after: avoid;
+}
+.side-title::after {
+  content: "";
+  display: block;
+  width: 7mm;
+  height: 0.7mm;
+  margin-top: 1.5mm;
+  background: var(--sidebar-accent);
+}
+
+/* Contacto */
+.contact-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.1mm;
+  font-size: 0.9em;
+  line-height: 1.25;
+}
+.ico {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 5.4mm;
+  height: 5.4mm;
+  margin-right: 2.4mm;
+  border-radius: 50%;
+  background: var(--icon-bg);
+  border: 0.5pt solid var(--icon-border);
+}
+.ico-svg { display: block; width: 2.9mm; height: 2.9mm; }
+.c-text { min-width: 0; overflow-wrap: break-word; color: var(--sidebar-text); }
+
+/* Habilidades: nivel visual + texto real del nivel */
+.skill-cat { margin-bottom: 3.6mm; break-inside: avoid; }
+.skill-cat:last-child { margin-bottom: 0; }
+.skill-cat-name {
+  margin-bottom: 1.6mm;
+  font-size: 0.84em;
+  font-weight: bold;
+  color: var(--sidebar-muted);
+}
+.skill { margin-bottom: 1.7mm; break-inside: avoid; }
+.skill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.92em;
+  line-height: 1.2;
+}
+.skill-name { font-weight: 600; }
+.skill-level { flex: none; margin-left: 2mm; font-size: 0.82em; color: var(--sidebar-muted); }
+.meter { display: flex; margin-top: 0.8mm; }
+.meter i {
+  display: block;
+  flex: 1;
+  height: 0.9mm;
+  margin-right: 0.8mm;
+  border-radius: 0.45mm;
+  background: var(--meter-track);
+}
+.meter i:last-child { margin-right: 0; }
+.meter-basic i:nth-child(-n+1),
+.meter-intermediate i:nth-child(-n+2),
+.meter-advanced i:nth-child(-n+3),
+.meter-expert i { background: var(--sidebar-accent); }
+
+/* Idiomas */
+.lang { margin-bottom: 2.6mm; break-inside: avoid; }
+.lang:last-child { margin-bottom: 0; }
+.lang-name { display: block; font-size: 0.92em; font-weight: 600; line-height: 1.2; }
+.lang-level { display: block; font-size: 0.82em; color: var(--sidebar-muted); line-height: 1.3; }
+.lang-bar {
+  display: block;
+  height: 0.9mm;
+  margin-top: 0.9mm;
+  border-radius: 0.45mm;
+  background: var(--meter-track);
+}
+.lang-bar span { display: block; height: 100%; border-radius: 0.45mm; background: var(--sidebar-accent); }
+.lang-A1 span { width: 16%; }
+.lang-A2 span { width: 30%; }
+.lang-B1 span { width: 46%; }
+.lang-B2 span { width: 62%; }
+.lang-C1 span { width: 80%; }
+.lang-C2 span { width: 92%; }
+.lang-native span { width: 100%; }
+
+/* ---------- Main ---------- */
+.main {
+  min-width: 0;
+  padding: 0 11mm 0 8.5mm;
+}
+
+.hero { margin-bottom: 6.5mm; }
+.name {
+  font-family: var(--font-head);
+  font-size: 2.75em;
+  font-weight: bold;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: var(--name-color);
+}
+.headline {
+  margin-top: 2.2mm;
+  font-size: 1.14em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--accent);
+}
+.hero::after {
+  content: "";
+  display: block;
+  width: 16mm;
+  height: 1mm;
+  margin-top: 4mm;
+  background: var(--accent);
+}
+
+.block { margin-bottom: 5.5mm; }
+.block:last-child { margin-bottom: 0; }
+.block-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3.2mm;
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  font-weight: bold;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  break-after: avoid;
+}
+.block-title::after {
+  content: "";
+  flex: 1;
+  margin-left: 3mm;
+  border-top: 0.6pt solid var(--rule);
+}
+
+.summary { font-size: 1.02em; line-height: 1.5; }
+
+/* Entradas */
+.entry { margin-bottom: 4.2mm; break-inside: avoid; }
+/* Experiencias largas pueden partirse entre páginas (evita huecos grandes); cabecera y
+   primer logro quedan juntos y cada logro es indivisible. */
+.timeline .entry { break-inside: auto; }
+.entry-sub { break-after: avoid; }
+.bullets li { break-inside: avoid; }
+.entry:last-child { margin-bottom: 0; }
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  break-after: avoid;
+}
+.entry-title {
+  font-family: var(--font-body);
+  font-size: 1.1em;
+  font-weight: bold;
+  line-height: 1.25;
+  color: var(--text);
+}
+.entry-dates {
+  flex: none;
+  margin-left: 3mm;
+  font-size: 0.86em;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.entry-sub { margin-top: 0.4mm; color: var(--muted); font-size: 0.94em; }
+.entry-sub > span + span::before { content: "· "; color: var(--muted); }
+.entry-sub-2 { margin-top: 0.2mm; }
+.org { font-weight: 600; color: var(--accent); }
+.link { color: var(--accent); }
+.badge { font-weight: 600; color: var(--accent); }
+.entry-desc { margin-top: 1.2mm; }
+
+.bullets { margin-top: 1.6mm; }
+.bullets li {
+  position: relative;
+  margin-bottom: 1mm;
+  padding-left: 3.8mm;
+}
+.bullets li:last-child { margin-bottom: 0; }
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0.4mm;
+  top: 0.52em;
+  width: 1.4mm;
+  height: 1.4mm;
+  border-radius: 0.35mm;
+  background: var(--accent);
+}
+
+.chips { margin-top: 1.8mm; line-height: 1; }
+.chip {
+  display: inline-block;
+  margin: 0 0.4mm 1mm 0;
+  padding: 0.7mm 1.9mm 0.6mm;
+  border: 0.5pt solid var(--chip-border);
+  border-radius: 1.3mm;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  font-size: 0.78em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Línea de tiempo en experiencia */
+.timeline {
+  margin-left: 1mm;
+  padding-left: 4.6mm;
+  border-left: 0.8pt solid var(--rule);
+}
+.timeline .entry { position: relative; }
+.timeline .entry::before {
+  content: "";
+  position: absolute;
+  left: -6.05mm;
+  top: 0.9mm;
+  box-sizing: border-box;
+  width: 2.9mm;
+  height: 2.9mm;
+  border-radius: 50%;
+  border: 0.75mm solid var(--accent);
+  background: var(--page-bg);
+}
+
+/* Certificaciones: compactas */
+.cert { margin-bottom: 2.6mm; break-inside: avoid; }
+.cert:last-child { margin-bottom: 0; }
+.cert-name { font-size: 1em; font-weight: bold; line-height: 1.3; }
+
+/* ---------- Pantalla (preview del editor en iframe) ---------- */
+@media screen {
+  html { background: #d9dde3; }
+  body { padding: 24px 0; }
+  .cv {
+    box-sizing: border-box;
+    width: 215.9mm;
+    min-height: 279.4mm;
+    margin: 0 auto;
+    padding: 13mm 0 12mm;
+    background: linear-gradient(to right, var(--sidebar-bg) 32%, var(--page-bg) 32%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}

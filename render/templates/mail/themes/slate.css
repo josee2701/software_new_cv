@@ -1,0 +1,22 @@
+/* Tema slate — gris azulado, editorial. Sidebar clara, nombre en serif, acento acero. */
+:root {
+  --accent: #36597a;
+  --sidebar-bg: #e9edf2;
+  --text: #1c2631;
+  --muted: #5b6979;
+  --font-head: "Noto Serif Display", "Noto Serif", Georgia, "Liberation Serif", serif;
+  --font-body: "Source Sans 3", "Source Sans Pro", Calibri, Carlito, "Liberation Sans", sans-serif;
+  --rule: #d2d9e1;
+  --sidebar-text: #1c2631;
+  --sidebar-muted: #566779;
+  --sidebar-head: #1c2631;
+  --sidebar-accent: var(--accent);
+  --icon-bg: var(--accent);
+  --meter-track: #cdd5de;
+  --chip-bg: #f2f5f8;
+  --chip-border: #d2d9e1;
+  --chip-text: #34495e;
+  --photo-ring: #ffffff;
+  --photo-radius: 16%;
+}
+.theme-slate .name { font-weight: 600; letter-spacing: -0.005em; }

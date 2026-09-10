@@ -1,0 +1,16 @@
+/* Solo en la preview del editor (for_preview=True). Simula la hoja en pantalla;
+   no se usa al exportar, así el HTML final solo contiene #000/#333. */
+@media screen {
+  html { background: #e4e6ea; }
+  body {
+    box-sizing: border-box;
+    width: 215.9mm;
+    min-height: 279.4mm;
+    margin: 24px auto;
+    padding: 18mm;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  body.density-compact { padding: 14mm; }
+  body.density-wide { padding: 22mm; }
+}

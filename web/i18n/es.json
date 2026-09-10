@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "summary": {"upper": "RESUMEN PROFESIONAL", "title": "Resumen profesional"},
+    "experience": {"upper": "EXPERIENCIA PROFESIONAL", "title": "Experiencia profesional"},
+    "education": {"upper": "EDUCACIÓN", "title": "Educación"},
+    "skills": {"upper": "HABILIDADES", "title": "Habilidades"},
+    "projects": {"upper": "PROYECTOS", "title": "Proyectos"},
+    "certifications": {"upper": "CERTIFICACIONES", "title": "Certificaciones"},
+    "languages": {"upper": "IDIOMAS", "title": "Idiomas"}
+  },
+  "t": {
+    "present": "Actual",
+    "remote": "Remoto",
+    "contact": "Contacto",
+    "technologies": "Tecnologías",
+    "credential": "Credencial",
+    "expires": "Vence",
+    "gpa": "Promedio",
+    "in_progress": "En curso"
+  },
+  "levels": {
+    "skill": {
+      "basic": "Básico",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado",
+      "expert": "Experto"
+    },
+    "language": {
+      "A1": "A1 — Principiante",
+      "A2": "A2 — Básico",
+      "B1": "B1 — Intermedio",
+      "B2": "B2 — Intermedio alto",
+      "C1": "C1 — Avanzado",
+      "C2": "C2 — Dominio",
+      "native": "Nativo"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{#- Esqueleto del editor (Fase 4). Las páginas extienden este layout con los bloques
+    `title`, `topbar`, `content` y `scripts`. Estilos: static/css/editor.css. -#}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}cv-ats{% endblock %}</title>
+<link rel="stylesheet" href="/static/css/editor.css">
+<script src="/static/vendor/htmx.min.js"></script>
+<script src="/static/vendor/Sortable.min.js"></script>
+{% block head %}{% endblock %}
+<script defer src="/static/vendor/alpine.min.js"></script>
+</head>
+<body hx-headers='{"Accept": "text/html"}'>
+<a class="sr-only" href="#main">Saltar al contenido</a>
+{% block body %}
+<div class="app">
+  <header class="topbar">
+    {% block topbar %}<h1>cv-ats</h1>{% endblock %}
+  </header>
+  <main id="main" class="pane-form">
+    {% block content %}{% endblock %}
+  </main>
+  <section class="pane-preview" aria-label="Vista previa">
+    {% block preview %}{% endblock %}
+  </section>
+</div>
+{% endblock %}
+<div id="live" class="sr-only" aria-live="polite"></div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

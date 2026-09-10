@@ -26,3 +26,30 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
   así el mismo HTML sirve para la preview en `<iframe>` (`srcdoc`) y para WeasyPrint sin rutas relativas.
 - La foto se pasa al template como **data URI** (`basics.photo_src`), mismo motivo.
 - Disco del proyecto es NTFS (`ntfs3`): se usa `UV_LINK_MODE=copy` si `uv` avisa de hardlinks entre sistemas de archivos.
+
+## 2026-09-10 — Diseño
+
+- **Sidebar multipágina del `mail`**: la sidebar es un ítem de CSS Grid (WeasyPrint 70 sí
+  fragmenta grid entre páginas) y su fondo se pinta en `@page` con un `linear-gradient` de corte
+  duro al 32% (márgenes laterales de página = 0). La franja continúa en la página 2+ aunque el
+  contenido de la sidebar termine antes; si la sidebar se desborda (muchas skills) sigue en la
+  página 2 en su columna. No se usa `position: running()` (en WeasyPrint solo sirve para cajas de
+  margen). Consecuencia: no se puede poner fondo en `html`/`body` en impresión (taparía el degradado).
+- **`mail` ignora `profile.font_family`**: el valor por defecto del perfil es `Arial` y anularía
+  la tipografía de los temas. Las fuentes del `mail` las define el tema (`--font-head`, `--font-body`).
+- **Iconos SVG con trazo blanco fijo** sobre círculo pintado por CSS (`--icon-bg`): WeasyPrint 70
+  no aplica CSS externo ni `currentColor` a SVG inline.
+- **Separadores " · " de metadatos vía CSS** (`.meta > span + span::before`): el PDF los contiene
+  como texto real (verificado con pdfplumber) y la plantilla no necesita lógica de separadores.
+  La línea de contacto ATS sí lleva ` | ` literal en el HTML.
+- **Densidad del `ats` con páginas con nombre** (`body.density-compact { page: compact }` +
+  `@page compact { margin: 14mm }`): todo el CSS queda en `ats.css`.
+- **Preview**: el `ats` incluye `ats/preview.css` (hoja simulada en pantalla) solo si
+  `for_preview`; así el HTML exportado solo contiene `#000`/`#333`. El `mail` usa `@media screen`.
+- **Tema desconocido o `None` en `mail`** → `slate` (include con lista de respaldo de Jinja).
+- **Educación `in_progress`**: se muestra `t.in_progress` como pieza extra de la línea de metadatos.
+- **`mail` sin foto**: no hay hueco ni placeholder; una barra de acento corta alinea la sidebar con
+  el nombre. No hay iniciales porque el contrato no trae `initials` (propuesto al jefe).
+- **`web/i18n/{es,en}.json`**: `{"sections": {key: {"upper", "title"}}, "t": {...}, "levels":
+  {"skill": {basic..expert}, "language": {A1..C2, native}}}`.
+- **Vendor**: htmx 2.0.4, Alpine.js 3.14.8, SortableJS 1.15.6 (`static/vendor/VERSIONS.md`).

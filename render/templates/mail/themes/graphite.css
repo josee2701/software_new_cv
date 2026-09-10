@@ -1,0 +1,28 @@
+/* Tema graphite — oscuro. Solo la sidebar es oscura (el cuerpo queda blanco para que imprima
+   bien y lea con contraste). Acento ámbar/cobre: claro en la sidebar, oscuro sobre blanco
+   (#9a5a10 ≈ 5.3:1 sobre #fff). */
+:root {
+  --accent: #9a5a10;
+  --sidebar-bg: #23272d;
+  --text: #1a1d21;
+  --muted: #5d646e;
+  --font-head: "Source Sans 3", "Source Sans Pro", Calibri, Carlito, "Liberation Sans", sans-serif;
+  --font-body: "Source Sans 3", "Source Sans Pro", Calibri, Carlito, "Liberation Sans", sans-serif;
+  --rule: #d9dcdf;
+  --name-color: #1a1d21;
+  --sidebar-text: #eceef0;
+  --sidebar-muted: #a7adb5;
+  --sidebar-head: #ffffff;
+  --sidebar-accent: #e3a44a;
+  --icon-bg: #3a3f47;
+  --icon-border: #e3a44a;
+  --meter-track: #40464f;
+  --chip-bg: #f4f4f5;
+  --chip-border: #d9dcdf;
+  --chip-text: #33383f;
+  --photo-ring: #e3a44a;
+  --photo-radius: 50%;
+}
+.theme-graphite .name { font-weight: 900; text-transform: uppercase; letter-spacing: 0.01em; font-size: 2.55em; }
+.theme-graphite .headline { color: var(--muted); font-weight: 600; }
+.theme-graphite .hero::after { height: 1.3mm; width: 22mm; }

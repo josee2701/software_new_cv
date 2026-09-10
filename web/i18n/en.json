@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "summary": {"upper": "SUMMARY", "title": "Summary"},
+    "experience": {"upper": "EXPERIENCE", "title": "Experience"},
+    "education": {"upper": "EDUCATION", "title": "Education"},
+    "skills": {"upper": "SKILLS", "title": "Skills"},
+    "projects": {"upper": "PROJECTS", "title": "Projects"},
+    "certifications": {"upper": "CERTIFICATIONS", "title": "Certifications"},
+    "languages": {"upper": "LANGUAGES", "title": "Languages"}
+  },
+  "t": {
+    "present": "Present",
+    "remote": "Remote",
+    "contact": "Contact",
+    "technologies": "Technologies",
+    "credential": "Credential",
+    "expires": "Expires",
+    "gpa": "GPA",
+    "in_progress": "In progress"
+  },
+  "levels": {
+    "skill": {
+      "basic": "Basic",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    },
+    "language": {
+      "A1": "A1 — Beginner",
+      "A2": "A2 — Elementary",
+      "B1": "B1 — Intermediate",
+      "B2": "B2 — Upper intermediate",
+      "C1": "C1 — Advanced",
+      "C2": "C2 — Proficient",
+      "native": "Native"
+    }
+  }
+}
