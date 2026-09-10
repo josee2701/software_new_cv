@@ -33,6 +33,8 @@ PHOTO = DESIGN_DIR / "sample_photo.png"
 
 THEMES = ("slate", "ocean", "graphite")
 DENSITIES = ("compact", "normal", "wide")
+EN_SLUGS = ("ats_normal", "mail_slate_foto", "mail_ocean_sinfoto")  # subconjunto en inglés
+SIDEBAR_RATIO = 0.32  # ancho de la sidebar del mail (grid 32% / 68%)
 
 
 @dataclass(frozen=True)
@@ -88,13 +90,15 @@ def variants() -> list[Variant]:
         Variant("ats_normal_georgia", "ats", font="Georgia"),
     ]
     for theme in THEMES:
-        items.append(Variant(f"mail_{theme}_foto", "mail", theme=theme, photo=True))
-        items.append(Variant(f"mail_{theme}_sinfoto", "mail", theme=theme))
-    items += [
-        Variant("mail_slate_compact_foto", "mail", density="compact", theme="slate", photo=True),
-        Variant("mail_ocean_wide_sinfoto", "mail", density="wide", theme="ocean"),
-        Variant("mail_slate_accent_foto", "mail", theme="slate", photo=True, accent="#B4432F"),
-    ]
+        for density in DENSITIES:
+            suffix = "" if density == "normal" else f"_{density}"
+            items.append(
+                Variant(f"mail_{theme}{suffix}_foto", "mail", density, theme=theme, photo=True)
+            )
+            items.append(Variant(f"mail_{theme}{suffix}_sinfoto", "mail", density, theme=theme))
+    items.append(
+        Variant("mail_slate_accent_foto", "mail", theme="slate", photo=True, accent="#B4432F")
+    )
     return items
 
 
@@ -102,10 +106,43 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def languages_split(pages_text: list[str], ctx: dict[str, Any]) -> list[str]:
+    """Idiomas en una página distinta a la de su título (bloque partido o título huérfano).
+
+    En mail recibe solo el texto de la sidebar: pdfplumber une en una línea lo que está a la
+    misma altura en las dos columnas.
+    """
+    section = ctx["sections_by_key"].get("languages")
+    if section is None:
+        return []
+    title = section["title"].upper()  # ats ya viene en mayúsculas; mail lo pone el CSS
+    title_pages = [
+        index
+        for index, text in enumerate(pages_text)
+        if any(line.strip() == title for line in text.splitlines())
+    ]
+    if len(title_pages) != 1:
+        return [f"título {title!r} encontrado en páginas {title_pages}"]
+    page_text = pages_text[title_pages[0]]
+    return [
+        f"idioma {entry['name']!r} fuera de la página del título {title!r}"
+        for entry in section["entries"]
+        if entry["name"] not in page_text
+    ]
+
+
 def roundtrip(pdf_path: Path, ctx: dict[str, Any]) -> list[str]:
-    """Devuelve la lista de valores que NO aparecen en el texto extraído del PDF."""
+    """Devuelve problemas de extracción: valores ausentes y bloques de idiomas partidos."""
     with pdfplumber.open(pdf_path) as pdf:
-        text = normalize(" ".join(page.extract_text() or "" for page in pdf.pages))
+        pages_text = [page.extract_text() or "" for page in pdf.pages]
+        if ctx["destination"] == "mail":
+            block_text = [
+                page.crop((0, 0, page.width * SIDEBAR_RATIO, page.height)).extract_text() or ""
+                for page in pdf.pages
+            ]
+        else:
+            block_text = pages_text
+    text = normalize(" ".join(pages_text))
     compact = re.sub(r"\s", "", text)
     basics = ctx["basics"]
     missing: list[str] = []
@@ -119,7 +156,7 @@ def roundtrip(pdf_path: Path, ctx: dict[str, Any]) -> list[str]:
     for item in experience["entries"]:
         if item["company"] not in text:
             missing.append(item["company"])
-    return missing
+    return missing + languages_split(block_text, ctx)
 
 
 def html_violations(html: str) -> list[str]:
@@ -130,27 +167,31 @@ def html_violations(html: str) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--lang", choices=("es", "en", "all"), default="all")
+    parser.add_argument("--out", type=Path, default=OUT_DIR, help="carpeta de salida")
     args = parser.parse_args()
+    out_dir: Path = args.out
     langs = ("es", "en") if args.lang == "all" else (args.lang,)
 
     env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     failures = 0
 
     print(f"{'archivo':<34} {'págs':>4}  round-trip")
     for lang in langs:
         base = load_json(DESIGN_DIR / f"sample_context_{lang}.json")
         for variant in variants():
-            if lang == "en" and variant.slug not in ("ats_normal", "mail_slate_foto"):
+            if lang == "en" and variant.slug not in EN_SLUGS:
                 continue
             ctx = build_context(base, variant)
             html = env.get_template(f"{variant.destination}/base.html").render(**ctx)
             stem = f"{variant.slug}_{lang}"
-            (OUT_DIR / f"{stem}.html").write_text(html, encoding="utf-8")
+            (out_dir / f"{stem}.html").write_text(html, encoding="utf-8")
 
             document = HTML(string=html, base_url=str(ROOT)).render()
-            pdf_path = OUT_DIR / f"{stem}.pdf"
-            document.write_pdf(pdf_path)
+            pdf_path = out_dir / f"{stem}.pdf"
+            # Un solo write: en el disco NTFS (ntfs3) la escritura incremental de WeasyPrint
+            # llegó a quedarse bloqueada en estado D.
+            pdf_path.write_bytes(document.write_pdf())
 
             problems = roundtrip(pdf_path, ctx)
             if variant.destination == "ats":
@@ -161,7 +202,7 @@ def main() -> int:
             status = "OK" if not problems else "FALLA: " + "; ".join(problems)
             print(f"{stem:<34} {len(document.pages):>4}  {status}")
 
-    print(f"\nSalida en {OUT_DIR.relative_to(ROOT)}/")
+    print(f"\nSalida en {out_dir}/")
     return 1 if failures else 0
 
 
