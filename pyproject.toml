@@ -50,17 +50,25 @@ packages = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = ["static/vendor"]
+extend-exclude = ["static/vendor", "*.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N", "S", "SIM", "RUF"]
 ignore = ["S101"]  # assert en tests
+# El contrato de render usa guion "–" (en dash) y separador "·" en textos.
+allowed-confusables = ["–", "·"]
+
+[tool.ruff.lint.per-file-ignores]
+"alembic/versions/*" = ["E501"]  # migraciones autogeneradas (revisadas a mano)
+"tests/*" = ["S105", "S106"]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-files = ["app", "models", "validator", "export", "importer", "services"]
+files = [
+  "app", "models", "validator", "export", "importer", "services", "schemas", "render",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

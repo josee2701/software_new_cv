@@ -78,45 +78,83 @@ o lista vacía (nunca `None`), salvo donde se indica.
 
 ### experience
 ```python
-{"id": 3, "role": "Desarrollador Backend", "company": "Banco X",
- "employment_type": "full-time",         # "" si no (valor crudo)
- "employment_type_label": "Tiempo completo",  # localizado; "" si no hay
- "location": "Bogotá, Colombia",         # "" si no; si remote: "Remoto" o "Bogotá · Remoto"
- "dates": "03/2021 – Actual",            # ya formateado con date_format + idioma, guion "–"
- "description": "",
- "achievements": ["Reduje la latencia…", ...],   # strings, ya limpios
- "technologies": ["Python", "PostgreSQL"]}
+{
+    "id": 3,
+    "role": "Desarrollador Backend",
+    "company": "Banco X",
+    "employment_type": "full-time",  # "" si no (valor crudo)
+    "employment_type_label": "Tiempo completo",  # localizado; "" si no hay
+    "location": "Bogotá, Colombia",  # "" si no; si remote: "Remoto" o "Bogotá · Remoto"
+    "dates": "03/2021 – Actual",  # ya formateado con date_format + idioma, guion "–"
+    "description": "",
+    "achievements": ["Reduje la latencia…", ...],  # strings, ya limpios
+    "technologies": ["Python", "PostgreSQL"],
+}
 ```
 
 ### education
 ```python
-{"id": 1, "degree": "Ingeniería de Sistemas", "institution": "Universidad Nacional",
- "field": "", "location": "Bogotá", "dates": "2014 – 2019",   # "" si sin fechas
- # si in_progress: dates ya trae el fin localizado, p.ej. "2023 – En curso" / "2023 – In progress".
- # La plantilla NO añade t.in_progress; el booleano queda solo para estilo.
- "in_progress": False, "gpa": "", "description": ""}
+{
+    "id": 1,
+    "degree": "Ingeniería de Sistemas",
+    "institution": "Universidad Nacional",
+    "field": "",
+    "location": "Bogotá",
+    "dates": "2014 – 2019",  # "" si sin fechas
+    # si in_progress: dates ya trae el fin localizado, p.ej. "2023 – En curso" / "2023 – In progress".
+    # La plantilla NO añade t.in_progress; el booleano queda solo para estilo.
+    "in_progress": False,
+    "gpa": "",
+    "description": "",
+}
 ```
 
 ### skills
 ```python
-{"id": 2, "category": "Lenguajes",
- "skills": [{"name": "Python", "level": "expert", "level_label": "Experto", "years": 6,
-             "years_label": "6 años"}],   # "1 año" / "6 years"
- # level / level_label / years / years_label pueden ser None
- "names": "Python, Go, SQL"}              # join listo para ats ("Categoría: names")
+{
+    "id": 2,
+    "category": "Lenguajes",
+    "skills": [
+        {
+            "name": "Python",
+            "level": "expert",
+            "level_label": "Experto",
+            "years": 6,
+            "years_label": "6 años",
+        }
+    ],  # "1 año" / "6 years"
+    # level / level_label / years / years_label pueden ser None
+    "names": "Python, Go, SQL",
+}  # join listo para ats ("Categoría: names")
 ```
 En `ats` la plantilla **no** muestra niveles (regla `content.skills_no_levels_ats`).
 
 ### projects
 ```python
-{"id": 1, "name": "cv-ats", "role": "", "description": "…", "url": "https://…",
- "url_display": "github.com/juan/cv-ats", "dates": "2024 – 2025", "technologies": ["FastAPI"]}
+{
+    "id": 1,
+    "name": "cv-ats",
+    "role": "",
+    "description": "…",
+    "url": "https://…",
+    "url_display": "github.com/juan/cv-ats",
+    "dates": "2024 – 2025",
+    "technologies": ["FastAPI"],
+}
 ```
 
 ### certifications
 ```python
-{"id": 1, "name": "AWS Solutions Architect", "issuer": "Amazon", "date": "05/2023",
- "expiry": "05/2026", "credential_id": "", "url": "", "url_display": ""}
+{
+    "id": 1,
+    "name": "AWS Solutions Architect",
+    "issuer": "Amazon",
+    "date": "05/2023",
+    "expiry": "05/2026",
+    "credential_id": "",
+    "url": "",
+    "url_display": "",
+}
 ```
 
 ### languages
