@@ -115,8 +115,8 @@ def roundtrip(pdf_path: Path, ctx: dict[str, Any]) -> list[str]:
             missing.append(needle)
     if basics["phone"] not in compact:
         missing.append(f"{basics['phone']} (E.164 sin espacios)")
-    experience = ctx["sections_by_key"].get("experience", {"items": []})
-    for item in experience["items"]:
+    experience = ctx["sections_by_key"].get("experience", {"entries": []})
+    for item in experience["entries"]:
         if item["company"] not in text:
             missing.append(item["company"])
     return missing

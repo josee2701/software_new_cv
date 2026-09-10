@@ -1,12 +1,33 @@
 {
   "sections": {
-    "summary": {"upper": "RESUMEN PROFESIONAL", "title": "Resumen profesional"},
-    "experience": {"upper": "EXPERIENCIA PROFESIONAL", "title": "Experiencia profesional"},
-    "education": {"upper": "EDUCACIÓN", "title": "Educación"},
-    "skills": {"upper": "HABILIDADES", "title": "Habilidades"},
-    "projects": {"upper": "PROYECTOS", "title": "Proyectos"},
-    "certifications": {"upper": "CERTIFICACIONES", "title": "Certificaciones"},
-    "languages": {"upper": "IDIOMAS", "title": "Idiomas"}
+    "summary": {
+      "upper": "RESUMEN PROFESIONAL",
+      "title": "Resumen profesional"
+    },
+    "experience": {
+      "upper": "EXPERIENCIA PROFESIONAL",
+      "title": "Experiencia profesional"
+    },
+    "education": {
+      "upper": "EDUCACIÓN",
+      "title": "Educación"
+    },
+    "skills": {
+      "upper": "HABILIDADES",
+      "title": "Habilidades"
+    },
+    "projects": {
+      "upper": "PROYECTOS",
+      "title": "Proyectos"
+    },
+    "certifications": {
+      "upper": "CERTIFICACIONES",
+      "title": "Certificaciones"
+    },
+    "languages": {
+      "upper": "IDIOMAS",
+      "title": "Idiomas"
+    }
   },
   "t": {
     "present": "Actual",
@@ -34,5 +55,16 @@
       "C2": "C2 — Dominio",
       "native": "Nativo"
     }
+  },
+  "employment_types": {
+    "full-time": "Tiempo completo",
+    "part-time": "Medio tiempo",
+    "contractor": "Contratista",
+    "freelance": "Independiente",
+    "internship": "Práctica"
+  },
+  "years": {
+    "one": "1 año",
+    "many": "{n} años"
   }
 }

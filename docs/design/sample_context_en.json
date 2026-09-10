@@ -30,7 +30,8 @@
     "phone_display": "+57 310 456 7890",
     "location": "Medellín, Antioquia, Colombia",
     "summary": "Systems engineer with 8 years of experience designing and running high-traffic backend services in banking and e-commerce. Specialized in Python (FastAPI, Django) and Go, microservice architecture, PostgreSQL and AWS. Led monolith-to-services migrations, reduced infrastructure costs and improved the reliability of payment platforms. Looking for teams that value quality, observability and continuous delivery.",
-    "photo_src": null
+    "photo_src": null,
+    "initials": "SR"
   },
   "links": [
     {
@@ -50,17 +51,18 @@
     {
       "key": "summary",
       "title": "SUMMARY",
-      "items": []
+      "entries": []
     },
     {
       "key": "experience",
       "title": "EXPERIENCE",
-      "items": [
+      "entries": [
         {
           "id": 3,
           "role": "Senior Backend Engineer",
           "company": "Banco Andino Digital",
           "employment_type": "full-time",
+          "employment_type_label": "Full-time",
           "location": "Medellín · Remote",
           "dates": "03/2022 – Present",
           "description": "Digital payments platform team (12 people).",
@@ -86,6 +88,7 @@
           "role": "Backend Developer",
           "company": "Mercado Vivo S.A.S.",
           "employment_type": "full-time",
+          "employment_type_label": "Full-time",
           "location": "Bogotá, Colombia",
           "dates": "07/2019 – 02/2022",
           "description": "",
@@ -108,7 +111,8 @@
           "id": 1,
           "role": "Software Developer",
           "company": "Softlogic Consultores",
-          "employment_type": "full-time",
+          "employment_type": "contractor",
+          "employment_type_label": "Contractor",
           "location": "Medellín, Colombia",
           "dates": "01/2017 – 06/2019",
           "description": "",
@@ -129,7 +133,18 @@
     {
       "key": "education",
       "title": "EDUCATION",
-      "items": [
+      "entries": [
+        {
+          "id": 3,
+          "degree": "M.Sc. in Computer Science",
+          "institution": "Universidad de los Andes",
+          "field": "Distributed Systems",
+          "location": "Bogotá",
+          "dates": "2025 – In progress",
+          "in_progress": true,
+          "gpa": "",
+          "description": ""
+        },
         {
           "id": 2,
           "degree": "Specialization in Software Architecture",
@@ -157,7 +172,7 @@
     {
       "key": "skills",
       "title": "SKILLS",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "category": "Languages",
@@ -166,25 +181,29 @@
               "name": "Python",
               "level": "expert",
               "level_label": "Expert",
-              "years": 8
+              "years": 8,
+              "years_label": "8 years"
             },
             {
               "name": "Go",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             },
             {
               "name": "SQL",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 8
+              "years": 8,
+              "years_label": "8 years"
             },
             {
               "name": "TypeScript",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 2
+              "years": 2,
+              "years_label": "2 years"
             }
           ],
           "names": "Python, Go, SQL, TypeScript"
@@ -197,31 +216,36 @@
               "name": "FastAPI",
               "level": "expert",
               "level_label": "Expert",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             },
             {
               "name": "Django",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 5
+              "years": 5,
+              "years_label": "5 years"
             },
             {
               "name": "PostgreSQL",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 7
+              "years": 7,
+              "years_label": "7 years"
             },
             {
               "name": "Redis",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 5
+              "years": 5,
+              "years_label": "5 years"
             },
             {
               "name": "Kafka",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             }
           ],
           "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
@@ -234,31 +258,36 @@
               "name": "AWS",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             },
             {
               "name": "Docker",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 6
+              "years": 6,
+              "years_label": "6 years"
             },
             {
               "name": "Kubernetes",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             },
             {
               "name": "Terraform",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 2
+              "years": 2,
+              "years_label": "2 years"
             },
             {
               "name": "GitHub Actions",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             }
           ],
           "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
@@ -268,7 +297,7 @@
     {
       "key": "projects",
       "title": "PROJECTS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "pagos-sandbox",
@@ -302,7 +331,7 @@
     {
       "key": "certifications",
       "title": "CERTIFICATIONS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "AWS Certified Solutions Architect – Associate",
@@ -328,7 +357,7 @@
     {
       "key": "languages",
       "title": "LANGUAGES",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "name": "Spanish",
@@ -348,17 +377,18 @@
     "summary": {
       "key": "summary",
       "title": "SUMMARY",
-      "items": []
+      "entries": []
     },
     "experience": {
       "key": "experience",
       "title": "EXPERIENCE",
-      "items": [
+      "entries": [
         {
           "id": 3,
           "role": "Senior Backend Engineer",
           "company": "Banco Andino Digital",
           "employment_type": "full-time",
+          "employment_type_label": "Full-time",
           "location": "Medellín · Remote",
           "dates": "03/2022 – Present",
           "description": "Digital payments platform team (12 people).",
@@ -384,6 +414,7 @@
           "role": "Backend Developer",
           "company": "Mercado Vivo S.A.S.",
           "employment_type": "full-time",
+          "employment_type_label": "Full-time",
           "location": "Bogotá, Colombia",
           "dates": "07/2019 – 02/2022",
           "description": "",
@@ -406,7 +437,8 @@
           "id": 1,
           "role": "Software Developer",
           "company": "Softlogic Consultores",
-          "employment_type": "full-time",
+          "employment_type": "contractor",
+          "employment_type_label": "Contractor",
           "location": "Medellín, Colombia",
           "dates": "01/2017 – 06/2019",
           "description": "",
@@ -427,7 +459,18 @@
     "education": {
       "key": "education",
       "title": "EDUCATION",
-      "items": [
+      "entries": [
+        {
+          "id": 3,
+          "degree": "M.Sc. in Computer Science",
+          "institution": "Universidad de los Andes",
+          "field": "Distributed Systems",
+          "location": "Bogotá",
+          "dates": "2025 – In progress",
+          "in_progress": true,
+          "gpa": "",
+          "description": ""
+        },
         {
           "id": 2,
           "degree": "Specialization in Software Architecture",
@@ -455,7 +498,7 @@
     "skills": {
       "key": "skills",
       "title": "SKILLS",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "category": "Languages",
@@ -464,25 +507,29 @@
               "name": "Python",
               "level": "expert",
               "level_label": "Expert",
-              "years": 8
+              "years": 8,
+              "years_label": "8 years"
             },
             {
               "name": "Go",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             },
             {
               "name": "SQL",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 8
+              "years": 8,
+              "years_label": "8 years"
             },
             {
               "name": "TypeScript",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 2
+              "years": 2,
+              "years_label": "2 years"
             }
           ],
           "names": "Python, Go, SQL, TypeScript"
@@ -495,31 +542,36 @@
               "name": "FastAPI",
               "level": "expert",
               "level_label": "Expert",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             },
             {
               "name": "Django",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 5
+              "years": 5,
+              "years_label": "5 years"
             },
             {
               "name": "PostgreSQL",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 7
+              "years": 7,
+              "years_label": "7 years"
             },
             {
               "name": "Redis",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 5
+              "years": 5,
+              "years_label": "5 years"
             },
             {
               "name": "Kafka",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             }
           ],
           "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
@@ -532,31 +584,36 @@
               "name": "AWS",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             },
             {
               "name": "Docker",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 6
+              "years": 6,
+              "years_label": "6 years"
             },
             {
               "name": "Kubernetes",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 3
+              "years": 3,
+              "years_label": "3 years"
             },
             {
               "name": "Terraform",
               "level": "intermediate",
               "level_label": "Intermediate",
-              "years": 2
+              "years": 2,
+              "years_label": "2 years"
             },
             {
               "name": "GitHub Actions",
               "level": "advanced",
               "level_label": "Advanced",
-              "years": 4
+              "years": 4,
+              "years_label": "4 years"
             }
           ],
           "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
@@ -566,7 +623,7 @@
     "projects": {
       "key": "projects",
       "title": "PROJECTS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "pagos-sandbox",
@@ -600,7 +657,7 @@
     "certifications": {
       "key": "certifications",
       "title": "CERTIFICATIONS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "AWS Certified Solutions Architect – Associate",
@@ -626,7 +683,7 @@
     "languages": {
       "key": "languages",
       "title": "LANGUAGES",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "name": "Spanish",

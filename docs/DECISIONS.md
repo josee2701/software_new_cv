@@ -53,3 +53,17 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
 - **`web/i18n/{es,en}.json`**: `{"sections": {key: {"upper", "title"}}, "t": {...}, "levels":
   {"skill": {basic..expert}, "language": {A1..C2, native}}}`.
 - **Vendor**: htmx 2.0.4, Alpine.js 3.14.8, SortableJS 1.15.6 (`static/vendor/VERSIONS.md`).
+
+## 2026-09-10 — Diseño (ronda 2)
+
+- Plantillas migradas a `section.entries` (contrato actualizado por el jefe).
+- **Monograma sin foto** (`basics.initials`): sello de 30 mm con las iniciales en `--font-head`,
+  centrado donde iría la foto; forma y colores por tema vía `--mono-bg/-text/-ring/-radius/-weight`
+  (slate: cuadrado redondeado sólido en acento; ocean: círculo con anillo cian; graphite: círculo
+  con anillo e iniciales ámbar). La barra de acento queda solo como respaldo si no hay iniciales.
+- `employment_type_label`: solo en `mail`, como última pieza (en cursiva) de la línea
+  `Empresa · Ubicación · Tipo`. En `ats` no se muestra para no alterar la línea 2 `Ubicación · fechas`.
+- `years_label`: solo en `mail`, junto al nivel (`Experto · 8 años`). En `ats` nada de niveles/años.
+- Educación en curso: la plantilla ya no añade `t.in_progress` (viene en `dates`); en `mail`
+  `in_progress` solo colorea las fechas con el acento.
+- `web/i18n/{es,en}.json` agregan `employment_types` y `years` (`one` / `many` con `{n}`).

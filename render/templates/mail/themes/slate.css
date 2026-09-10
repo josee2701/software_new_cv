@@ -18,5 +18,10 @@
   --chip-text: #34495e;
   --photo-ring: #ffffff;
   --photo-radius: 16%;
+  /* Monograma: sello sólido en acento, iniciales en serif blanca. */
+  --mono-bg: var(--accent);
+  --mono-text: #ffffff;
+  --mono-ring: #ffffff;
+  --mono-weight: 600;
 }
 .theme-slate .name { font-weight: 600; letter-spacing: -0.005em; }

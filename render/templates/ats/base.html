@@ -34,7 +34,7 @@
   <p class="summary" data-entity="basics">{{ basics.summary }}</p>
 
   {%- elif section.key == "experience" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <article class="item" data-entity="experience" data-entity-id="{{ item.id }}">
     <h3 class="item-title">{{ item.role }} — {{ item.company }}</h3>
     <p class="meta">
@@ -58,14 +58,13 @@
   {%- endfor %}
 
   {%- elif section.key == "education" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <article class="item" data-entity="education" data-entity-id="{{ item.id }}">
     <h3 class="item-title">{{ item.degree }} — {{ item.institution }}</h3>
-    {%- if item.location or item.dates or item.in_progress %}
+    {%- if item.location or item.dates %}
     <p class="meta">
       {% if item.location %}<span>{{ item.location }}</span>{% endif %}
       {% if item.dates %}<span>{{ item.dates }}</span>{% endif %}
-      {% if item.in_progress %}<span>{{ t.in_progress }}</span>{% endif %}
     </p>
     {%- endif %}
     {%- if item.field or item.gpa %}
@@ -81,12 +80,12 @@
   {%- endfor %}
 
   {%- elif section.key == "skills" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <p class="line" data-entity="skill_category" data-entity-id="{{ item.id }}"><span class="label">{{ item.category }}:</span> {{ item.names }}</p>
   {%- endfor %}
 
   {%- elif section.key == "projects" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <article class="item" data-entity="project" data-entity-id="{{ item.id }}">
     <h3 class="item-title">{{ item.name }}{% if item.role %} — {{ item.role }}{% endif %}</h3>
     {%- if item.dates or item.url %}
@@ -103,7 +102,7 @@
   {%- endfor %}
 
   {%- elif section.key == "certifications" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <article class="item item-short" data-entity="certification" data-entity-id="{{ item.id }}">
     <h3 class="item-title">{{ item.name }} — {{ item.issuer }}</h3>
     {%- if item.date or item.expiry or item.credential_id or item.url %}
@@ -118,7 +117,7 @@
   {%- endfor %}
 
   {%- elif section.key == "languages" %}
-  {%- for item in section["items"] %}
+  {%- for item in section.entries %}
   <p class="line" data-entity="language" data-entity-id="{{ item.id }}"><span class="label">{{ item.name }}:</span> {{ item.level_label }}</p>
   {%- endfor %}
   {%- endif %}

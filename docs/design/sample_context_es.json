@@ -30,7 +30,8 @@
     "phone_display": "+57 310 456 7890",
     "location": "Medellín, Antioquia, Colombia",
     "summary": "Ingeniero de sistemas con 8 años de experiencia diseñando y operando servicios backend de alto tráfico en banca y comercio electrónico. Especialista en Python (FastAPI, Django) y Go, arquitectura de microservicios, PostgreSQL y AWS. He liderado migraciones de monolitos a servicios desacoplados, reducido costos de infraestructura y mejorado la confiabilidad de plataformas de pagos. Busco equipos que valoren la calidad, la observabilidad y la entrega continua.",
-    "photo_src": null
+    "photo_src": null,
+    "initials": "SR"
   },
   "links": [
     {
@@ -50,17 +51,18 @@
     {
       "key": "summary",
       "title": "RESUMEN PROFESIONAL",
-      "items": []
+      "entries": []
     },
     {
       "key": "experience",
       "title": "EXPERIENCIA PROFESIONAL",
-      "items": [
+      "entries": [
         {
           "id": 3,
           "role": "Ingeniero Backend Senior",
           "company": "Banco Andino Digital",
           "employment_type": "full-time",
+          "employment_type_label": "Tiempo completo",
           "location": "Medellín · Remoto",
           "dates": "03/2022 – Actual",
           "description": "Equipo de plataforma de pagos digitales (12 personas).",
@@ -86,6 +88,7 @@
           "role": "Desarrollador Backend",
           "company": "Mercado Vivo S.A.S.",
           "employment_type": "full-time",
+          "employment_type_label": "Tiempo completo",
           "location": "Bogotá, Colombia",
           "dates": "07/2019 – 02/2022",
           "description": "",
@@ -108,7 +111,8 @@
           "id": 1,
           "role": "Desarrollador de Software",
           "company": "Softlogic Consultores",
-          "employment_type": "full-time",
+          "employment_type": "contractor",
+          "employment_type_label": "Contratista",
           "location": "Medellín, Colombia",
           "dates": "01/2017 – 06/2019",
           "description": "",
@@ -129,7 +133,7 @@
     {
       "key": "education",
       "title": "EDUCACIÓN",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "degree": "Especialización en Arquitectura de Software",
@@ -157,7 +161,7 @@
     {
       "key": "skills",
       "title": "HABILIDADES",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "category": "Lenguajes",
@@ -166,25 +170,29 @@
               "name": "Python",
               "level": "expert",
               "level_label": "Experto",
-              "years": 8
+              "years": 8,
+              "years_label": "8 años"
             },
             {
               "name": "Go",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             },
             {
               "name": "SQL",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 8
+              "years": 8,
+              "years_label": "8 años"
             },
             {
               "name": "TypeScript",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 2
+              "years": 2,
+              "years_label": "2 años"
             }
           ],
           "names": "Python, Go, SQL, TypeScript"
@@ -197,31 +205,36 @@
               "name": "FastAPI",
               "level": "expert",
               "level_label": "Experto",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             },
             {
               "name": "Django",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 5
+              "years": 5,
+              "years_label": "5 años"
             },
             {
               "name": "PostgreSQL",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 7
+              "years": 7,
+              "years_label": "7 años"
             },
             {
               "name": "Redis",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 5
+              "years": 5,
+              "years_label": "5 años"
             },
             {
               "name": "Kafka",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             }
           ],
           "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
@@ -234,31 +247,36 @@
               "name": "AWS",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             },
             {
               "name": "Docker",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 6
+              "years": 6,
+              "years_label": "6 años"
             },
             {
               "name": "Kubernetes",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             },
             {
               "name": "Terraform",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 2
+              "years": 2,
+              "years_label": "2 años"
             },
             {
               "name": "GitHub Actions",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             }
           ],
           "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
@@ -268,7 +286,7 @@
     {
       "key": "projects",
       "title": "PROYECTOS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "pagos-sandbox",
@@ -302,7 +320,7 @@
     {
       "key": "certifications",
       "title": "CERTIFICACIONES",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "AWS Certified Solutions Architect – Associate",
@@ -328,7 +346,7 @@
     {
       "key": "languages",
       "title": "IDIOMAS",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "name": "Español",
@@ -348,17 +366,18 @@
     "summary": {
       "key": "summary",
       "title": "RESUMEN PROFESIONAL",
-      "items": []
+      "entries": []
     },
     "experience": {
       "key": "experience",
       "title": "EXPERIENCIA PROFESIONAL",
-      "items": [
+      "entries": [
         {
           "id": 3,
           "role": "Ingeniero Backend Senior",
           "company": "Banco Andino Digital",
           "employment_type": "full-time",
+          "employment_type_label": "Tiempo completo",
           "location": "Medellín · Remoto",
           "dates": "03/2022 – Actual",
           "description": "Equipo de plataforma de pagos digitales (12 personas).",
@@ -384,6 +403,7 @@
           "role": "Desarrollador Backend",
           "company": "Mercado Vivo S.A.S.",
           "employment_type": "full-time",
+          "employment_type_label": "Tiempo completo",
           "location": "Bogotá, Colombia",
           "dates": "07/2019 – 02/2022",
           "description": "",
@@ -406,7 +426,8 @@
           "id": 1,
           "role": "Desarrollador de Software",
           "company": "Softlogic Consultores",
-          "employment_type": "full-time",
+          "employment_type": "contractor",
+          "employment_type_label": "Contratista",
           "location": "Medellín, Colombia",
           "dates": "01/2017 – 06/2019",
           "description": "",
@@ -427,7 +448,7 @@
     "education": {
       "key": "education",
       "title": "EDUCACIÓN",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "degree": "Especialización en Arquitectura de Software",
@@ -455,7 +476,7 @@
     "skills": {
       "key": "skills",
       "title": "HABILIDADES",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "category": "Lenguajes",
@@ -464,25 +485,29 @@
               "name": "Python",
               "level": "expert",
               "level_label": "Experto",
-              "years": 8
+              "years": 8,
+              "years_label": "8 años"
             },
             {
               "name": "Go",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             },
             {
               "name": "SQL",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 8
+              "years": 8,
+              "years_label": "8 años"
             },
             {
               "name": "TypeScript",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 2
+              "years": 2,
+              "years_label": "2 años"
             }
           ],
           "names": "Python, Go, SQL, TypeScript"
@@ -495,31 +520,36 @@
               "name": "FastAPI",
               "level": "expert",
               "level_label": "Experto",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             },
             {
               "name": "Django",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 5
+              "years": 5,
+              "years_label": "5 años"
             },
             {
               "name": "PostgreSQL",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 7
+              "years": 7,
+              "years_label": "7 años"
             },
             {
               "name": "Redis",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 5
+              "years": 5,
+              "years_label": "5 años"
             },
             {
               "name": "Kafka",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             }
           ],
           "names": "FastAPI, Django, PostgreSQL, Redis, Kafka"
@@ -532,31 +562,36 @@
               "name": "AWS",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             },
             {
               "name": "Docker",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 6
+              "years": 6,
+              "years_label": "6 años"
             },
             {
               "name": "Kubernetes",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 3
+              "years": 3,
+              "years_label": "3 años"
             },
             {
               "name": "Terraform",
               "level": "intermediate",
               "level_label": "Intermedio",
-              "years": 2
+              "years": 2,
+              "years_label": "2 años"
             },
             {
               "name": "GitHub Actions",
               "level": "advanced",
               "level_label": "Avanzado",
-              "years": 4
+              "years": 4,
+              "years_label": "4 años"
             }
           ],
           "names": "AWS, Docker, Kubernetes, Terraform, GitHub Actions"
@@ -566,7 +601,7 @@
     "projects": {
       "key": "projects",
       "title": "PROYECTOS",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "pagos-sandbox",
@@ -600,7 +635,7 @@
     "certifications": {
       "key": "certifications",
       "title": "CERTIFICACIONES",
-      "items": [
+      "entries": [
         {
           "id": 2,
           "name": "AWS Certified Solutions Architect – Associate",
@@ -626,7 +661,7 @@
     "languages": {
       "key": "languages",
       "title": "IDIOMAS",
-      "items": [
+      "entries": [
         {
           "id": 1,
           "name": "Español",

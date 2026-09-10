@@ -22,6 +22,11 @@
   --chip-text: #33383f;
   --photo-ring: #e3a44a;
   --photo-radius: 50%;
+  /* Monograma: anillo ámbar, iniciales ámbar sobre grafito. */
+  --mono-bg: #2c3037;
+  --mono-text: #e3a44a;
+  --mono-ring: #e3a44a;
+  --mono-weight: 800;
 }
 .theme-graphite .name { font-weight: 900; text-transform: uppercase; letter-spacing: 0.01em; font-size: 2.55em; }
 .theme-graphite .headline { color: var(--muted); font-weight: 600; }

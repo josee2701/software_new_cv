@@ -24,6 +24,8 @@
 <aside class="sidebar">
   {%- if profile.include_photo and basics.photo_src %}
   <div class="photo"><img src="{{ basics.photo_src }}" alt="{{ basics.full_name }}"></div>
+  {%- elif basics.initials %}
+  <div class="monogram" aria-hidden="true"><span class="monogram-mark">{{ basics.initials }}</span></div>
   {%- else %}
   <div class="no-photo" aria-hidden="true"></div>
   {%- endif %}
@@ -46,14 +48,19 @@
   {%- if section.key == "skills" %}
   <section class="side-block skills">
     <h2 class="side-title">{{ section.title }}</h2>
-    {%- for item in section["items"] %}
+    {%- for item in section.entries %}
     <div class="skill-cat" data-entity="skill_category" data-entity-id="{{ item.id }}">
       <h3 class="skill-cat-name">{{ item.category }}</h3>
       <ul class="skill-list">
         {%- for skill in item.skills %}
         <li class="skill">
           <span class="skill-row"><span class="skill-name">{{ skill.name }}</span>
-            {%- if skill.level_label %} <span class="skill-level">{{ skill.level_label }}</span>{% endif %}</span>
+            {%- if skill.level_label or skill.years_label %}
+            <span class="skill-level">
+              {% if skill.level_label %}<span>{{ skill.level_label }}</span>{% endif %}
+              {% if skill.years_label %}<span>{{ skill.years_label }}</span>{% endif %}
+            </span>
+            {%- endif %}</span>
           {%- if skill.level %}
           <span class="meter meter-{{ skill.level }}" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           {%- endif %}
@@ -67,7 +74,7 @@
   <section class="side-block languages">
     <h2 class="side-title">{{ section.title }}</h2>
     <ul class="lang-list">
-      {%- for item in section["items"] %}
+      {%- for item in section.entries %}
       <li class="lang" data-entity="language" data-entity-id="{{ item.id }}">
         <span class="lang-name">{{ item.name }}</span>
         <span class="lang-level">{{ item.level_label }}</span>
@@ -98,7 +105,7 @@
 
     {%- elif section.key == "experience" %}
     <div class="timeline">
-      {%- for item in section["items"] %}
+      {%- for item in section.entries %}
       <article class="entry" data-entity="experience" data-entity-id="{{ item.id }}">
         <div class="entry-head">
           <h3 class="entry-title">{{ item.role }}</h3>
@@ -107,6 +114,7 @@
         <p class="entry-sub">
           <span class="org">{{ item.company }}</span>
           {% if item.location %}<span>{{ item.location }}</span>{% endif %}
+          {% if item.employment_type_label %}<span class="emp-type">{{ item.employment_type_label }}</span>{% endif %}
         </p>
         {%- if item.description %}
         <p class="entry-desc">{{ item.description }}</p>
@@ -126,7 +134,7 @@
     </div>
 
     {%- elif section.key == "projects" %}
-    {%- for item in section["items"] %}
+    {%- for item in section.entries %}
     <article class="entry" data-entity="project" data-entity-id="{{ item.id }}">
       <div class="entry-head">
         <h3 class="entry-title">{{ item.name }}</h3>
@@ -148,8 +156,8 @@
     {%- endfor %}
 
     {%- elif section.key == "education" %}
-    {%- for item in section["items"] %}
-    <article class="entry" data-entity="education" data-entity-id="{{ item.id }}">
+    {%- for item in section.entries %}
+    <article class="entry{% if item.in_progress %} is-in-progress{% endif %}" data-entity="education" data-entity-id="{{ item.id }}">
       <div class="entry-head">
         <h3 class="entry-title">{{ item.degree }}</h3>
         {%- if item.dates %}
@@ -159,7 +167,6 @@
       <p class="entry-sub">
         <span class="org">{{ item.institution }}</span>
         {% if item.location %}<span>{{ item.location }}</span>{% endif %}
-        {% if item.in_progress %}<span class="badge">{{ t.in_progress }}</span>{% endif %}
       </p>
       {%- if item.field or item.gpa %}
       <p class="entry-sub entry-sub-2">
@@ -175,7 +182,7 @@
 
     {%- elif section.key == "certifications" %}
     <div class="certs">
-      {%- for item in section["items"] %}
+      {%- for item in section.entries %}
       <article class="cert" data-entity="certification" data-entity-id="{{ item.id }}">
         <h3 class="cert-name">{{ item.name }}</h3>
         <p class="entry-sub">

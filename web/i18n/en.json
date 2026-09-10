@@ -1,12 +1,33 @@
 {
   "sections": {
-    "summary": {"upper": "SUMMARY", "title": "Summary"},
-    "experience": {"upper": "EXPERIENCE", "title": "Experience"},
-    "education": {"upper": "EDUCATION", "title": "Education"},
-    "skills": {"upper": "SKILLS", "title": "Skills"},
-    "projects": {"upper": "PROJECTS", "title": "Projects"},
-    "certifications": {"upper": "CERTIFICATIONS", "title": "Certifications"},
-    "languages": {"upper": "LANGUAGES", "title": "Languages"}
+    "summary": {
+      "upper": "SUMMARY",
+      "title": "Summary"
+    },
+    "experience": {
+      "upper": "EXPERIENCE",
+      "title": "Experience"
+    },
+    "education": {
+      "upper": "EDUCATION",
+      "title": "Education"
+    },
+    "skills": {
+      "upper": "SKILLS",
+      "title": "Skills"
+    },
+    "projects": {
+      "upper": "PROJECTS",
+      "title": "Projects"
+    },
+    "certifications": {
+      "upper": "CERTIFICATIONS",
+      "title": "Certifications"
+    },
+    "languages": {
+      "upper": "LANGUAGES",
+      "title": "Languages"
+    }
   },
   "t": {
     "present": "Present",
@@ -34,5 +55,16 @@
       "C2": "C2 — Proficient",
       "native": "Native"
     }
+  },
+  "employment_types": {
+    "full-time": "Full-time",
+    "part-time": "Part-time",
+    "contractor": "Contractor",
+    "freelance": "Freelance",
+    "internship": "Internship"
+  },
+  "years": {
+    "one": "1 year",
+    "many": "{n} years"
   }
 }

@@ -20,5 +20,10 @@
   --chip-text: #0f4b72;
   --photo-ring: #4cc3e6;
   --photo-radius: 50%;
+  /* Monograma: anillo cian sobre el azul marino, iniciales blancas. */
+  --mono-bg: #134a73;
+  --mono-text: #ffffff;
+  --mono-ring: #4cc3e6;
+  --mono-weight: 700;
 }
 .theme-ocean .name { font-weight: 800; letter-spacing: -0.015em; }
