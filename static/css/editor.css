@@ -971,3 +971,7 @@ kbd {
 /* Ayuda con icono (modal de exportación) */
 .help--icon { display: flex; align-items: flex-start; gap: 6px; margin-top: var(--sp-2); }
 .help--icon .icon { width: 14px; height: 14px; margin-top: 1px; }
+
+/* Tema inválido (422): marca las tarjetas como los demás campos. */
+.fieldset.is-invalid .theme-card { border-color: var(--c-error); }
+.fieldset.is-invalid .field-error { margin-top: var(--sp-2); }

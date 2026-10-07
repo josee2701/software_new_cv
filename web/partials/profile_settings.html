@@ -1,5 +1,5 @@
 {#- Ajustes de un perfil (PUT /ui/profiles/{pid}). Contexto: profile: ExportProfileOut, errors? -#}
-{% from "partials/_macros.html" import icon, field, select, check %}
+{% from "partials/_macros.html" import icon, field, select, check, errmsg %}
 {%- set errors = errors if errors is defined else {} -%}
 {%- set uid = "profile-" ~ profile.id -%}
 <section class="card" id="profile-settings" aria-labelledby="{{ uid }}-title">
@@ -21,7 +21,7 @@
     </div>
     <p class="notice">{{ icon("info") }}<span>Plataforma usa una plantilla de una columna, sin foto ni color: máxima compatibilidad con los ATS.</span></p>
     {%- else %}
-    <fieldset class="fieldset">
+    <fieldset class="fieldset{% if errors.theme %} is-invalid{% endif %}"{% if errors.theme %} aria-describedby="{{ uid }}-theme-err"{% endif %}>
       <legend class="label">Tema</legend>
       <div class="theme-cards">
         {%- for opt in choices.theme %}
@@ -32,16 +32,18 @@
         </label>
         {%- endfor %}
       </div>
+      {{ errmsg(errors, "theme", uid) }}
     </fieldset>
     <div class="grid-2" x-data="{ custom: {{ 'true' if profile.accent_color else 'false' }}, color: '{{ profile.accent_color or '#36597A' }}' }">
-      <div class="field">
+      <div class="field{% if errors.accent_color %} is-invalid{% endif %}">
         <span class="label" id="{{ uid }}-accent-label">Color de acento</span>
         <div class="color-row">
           <div class="check"><input type="checkbox" id="{{ uid }}-custom" x-model="custom"><label for="{{ uid }}-custom">Personalizado</label></div>
           <input type="color" x-model="color" :disabled="!custom" aria-labelledby="{{ uid }}-accent-label" class="color-input">
-          <input class="input input--hex" name="accent_color" :value="custom ? color : ''" value="{{ profile.accent_color or '' }}" x-show="custom" pattern="#[0-9A-Fa-f]{6}" aria-label="Color hexadecimal" @input="color = $event.target.value">
+          <input class="input input--hex" name="accent_color" :value="custom ? color : ''" value="{{ profile.accent_color or '' }}" x-show="custom" pattern="#[0-9A-Fa-f]{6}" aria-label="Color hexadecimal"{% if errors.accent_color %} aria-invalid="true" aria-describedby="{{ uid }}-accent_color-err"{% endif %} @input="color = $event.target.value">
         </div>
         <p class="help">Si no, se usa el acento del tema.</p>
+        {{ errmsg(errors, "accent_color", uid) }}
       </div>
       <div class="field field--check">{{ check(uid, "include_photo", "Incluir foto", profile.include_photo) }}</div>
     </div>
