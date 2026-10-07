@@ -1,0 +1,165 @@
+{#- Macros compartidas del editor: iconos, campos de formulario, selector show_in y cascarones
+    de sección/ítem. Sin lógica de negocio: solo marcado. -#}
+
+{%- macro icon(name, cls="") -%}
+<svg class="icon {{ cls }}" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- if name == "grip" -%}<g fill="currentColor" stroke="none"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></g>
+{%- elif name == "chevron" -%}<path d="m6 9 6 6 6-6"/>
+{%- elif name == "trash" -%}<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/>
+{%- elif name == "plus" -%}<path d="M12 5v14M5 12h14"/>
+{%- elif name == "both" -%}<path d="M4 4.5h9.5v13H4zM10.5 9.5v10H20V6.5h-3.5"/>
+{%- elif name == "ats" -%}<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>
+{%- elif name == "mail" -%}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6.5L20.5 7"/>
+{%- elif name == "check" -%}<path d="m5 12.5 4.5 4.5L19 7.5"/>
+{%- elif name == "x" -%}<path d="M6 6l12 12M18 6 6 18"/>
+{%- elif name == "error" -%}<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.2v.3"/>
+{%- elif name == "warning" -%}<path d="M12 3.5 2.5 20h19L12 3.5z"/><path d="M12 10v4.5M12 17.2v.3"/>
+{%- elif name == "info" -%}<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.3"/>
+{%- elif name == "copy" -%}<rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2"/><path d="M15.5 8.5V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9.5a1 1 0 0 0 1 1h3.5"/>
+{%- elif name == "star" -%}<path d="m12 3.5 2.6 5.5 6 .7-4.4 4.1 1.2 5.9L12 16.8l-5.4 2.9 1.2-5.9-4.4-4.1 6-.7z"/>
+{%- elif name == "download" -%}<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>
+{%- elif name == "upload" -%}<path d="M12 20V9M7 13.5l5-5 5 5M5 4h14"/>
+{%- elif name == "sliders" -%}<path d="M4 7h16M4 12h16M4 17h16"/><g fill="var(--c-surface, #fff)"><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="7.5" cy="17" r="2.2"/></g>
+{%- elif name == "eye" -%}<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>
+{%- elif name == "user" -%}<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>
+{%- elif name == "back" -%}<path d="M15 18l-6-6 6-6"/>
+{%- elif name == "shield" -%}<path d="M12 3 4.5 6v5.5c0 4.5 3.2 8 7.5 9.5 4.3-1.5 7.5-5 7.5-9.5V6L12 3z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/>
+{%- elif name == "edit" -%}<path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/>
+{%- elif name == "link" -%}<path d="M10 14a4.2 4.2 0 0 0 6 0l3-3a4.2 4.2 0 0 0-6-6l-1 1M14 10a4.2 4.2 0 0 0-6 0l-3 3a4.2 4.2 0 0 0 6 6l1-1"/>
+{%- elif name == "doc" -%}<path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5"/>
+{%- else -%}<circle cx="12" cy="12" r="3"/>
+{%- endif -%}
+</svg>
+{%- endmacro -%}
+
+{%- macro label_of(name, value) -%}
+{%- for opt in choices[name] if opt.value == value %}{{ opt.label }}{% endfor -%}
+{%- endmacro -%}
+
+{%- macro errmsg(errors, name, uid) -%}
+{%- if errors and errors[name] %}<p class="field-error" id="{{ uid }}-{{ name }}-err">{{ icon("error") }}<span>{{ errors[name] }}</span></p>{% endif -%}
+{%- endmacro -%}
+
+{%- macro _describedby(errors, name, uid, help) -%}
+{%- if help or (errors and errors[name]) %} aria-describedby="{% if help %}{{ uid }}-{{ name }}-help{% endif %}{% if errors and errors[name] %} {{ uid }}-{{ name }}-err{% endif %}"{% endif -%}
+{%- if errors and errors[name] %} aria-invalid="true"{% endif -%}
+{%- endmacro -%}
+
+{#- Campo de texto genérico. type: text|email|tel|url|month|number. -#}
+{%- macro field(uid, name, label, value="", errors={}, type="text", required=false, help="", maxlength=none, placeholder="", autocomplete="off", cls="", extra="") -%}
+<div class="field{% if errors and errors[name] %} is-invalid{% endif %} {{ cls }}">
+  <label class="label" for="{{ uid }}-{{ name }}">{{ label }}{% if required %}<span class="req" aria-hidden="true">*</span><span class="sr-only"> (obligatorio)</span>{% endif %}</label>
+  <input class="input" id="{{ uid }}-{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ value if value is not none else '' }}"{% if required %} required{% endif %}{% if maxlength %} maxlength="{{ maxlength }}"{% endif %}{% if placeholder %} placeholder="{{ placeholder }}"{% endif %} autocomplete="{{ autocomplete }}"{{ _describedby(errors, name, uid, help) }} {{ extra|safe }}>
+  {%- if help %}<p class="help" id="{{ uid }}-{{ name }}-help">{{ help }}</p>{% endif %}
+  {{- errmsg(errors, name, uid) }}
+</div>
+{%- endmacro -%}
+
+{#- Área de texto con contador opcional (rango recomendado rec_min–rec_max). -#}
+{%- macro textarea(uid, name, label, value="", errors={}, required=false, help="", maxlength=none, rows=3, rec_min=none, rec_max=none, placeholder="", cls="") -%}
+<div class="field{% if errors and errors[name] %} is-invalid{% endif %} {{ cls }}">
+  <div class="label-row">
+    <label class="label" for="{{ uid }}-{{ name }}">{{ label }}{% if required %}<span class="req" aria-hidden="true">*</span><span class="sr-only"> (obligatorio)</span>{% endif %}</label>
+    {%- if rec_max %}<span class="counter" data-counter-for="{{ uid }}-{{ name }}" data-min="{{ rec_min }}" data-max="{{ rec_max }}" aria-live="off"></span>{% endif %}
+  </div>
+  <textarea class="textarea" id="{{ uid }}-{{ name }}" name="{{ name }}" rows="{{ rows }}"{% if required %} required{% endif %}{% if maxlength %} maxlength="{{ maxlength }}"{% endif %}{% if placeholder %} placeholder="{{ placeholder }}"{% endif %}{{ _describedby(errors, name, uid, help) }}>{{ value if value is not none else '' }}</textarea>
+  {%- if help %}<p class="help" id="{{ uid }}-{{ name }}-help">{{ help }}</p>{% endif %}
+  {{- errmsg(errors, name, uid) }}
+</div>
+{%- endmacro -%}
+
+{%- macro select(uid, name, label, options, value=none, errors={}, required=false, empty_label="", help="", cls="") -%}
+<div class="field{% if errors and errors[name] %} is-invalid{% endif %} {{ cls }}">
+  <label class="label" for="{{ uid }}-{{ name }}">{{ label }}{% if required %}<span class="req" aria-hidden="true">*</span><span class="sr-only"> (obligatorio)</span>{% endif %}</label>
+  <select class="select" id="{{ uid }}-{{ name }}" name="{{ name }}"{% if required %} required{% endif %}{{ _describedby(errors, name, uid, help) }}>
+    {%- if empty_label %}<option value="">{{ empty_label }}</option>{% endif %}
+    {%- for opt in options %}
+    <option value="{{ opt.value }}"{% if value is not none and opt.value|string == value|string %} selected{% endif %}>{{ opt.label }}</option>
+    {%- endfor %}
+  </select>
+  {%- if help %}<p class="help" id="{{ uid }}-{{ name }}-help">{{ help }}</p>{% endif %}
+  {{- errmsg(errors, name, uid) }}
+</div>
+{%- endmacro -%}
+
+{#- Checkbox con hidden "false" previo: un formulario completo siempre envía el booleano. -#}
+{%- macro check(uid, name, label, checked=false, extra="") -%}
+<div class="check">
+  <input type="hidden" name="{{ name }}" value="false">
+  <input type="checkbox" id="{{ uid }}-{{ name }}" name="{{ name }}" value="true"{% if checked %} checked{% endif %} {{ extra|safe }}>
+  <label for="{{ uid }}-{{ name }}">{{ label }}</label>
+</div>
+{%- endmacro -%}
+
+{#- Selector show_in: formulario propio (agrupa los radios por ítem) que guarda al cambiar. -#}
+{%- macro showin(coll, item, uid) -%}
+<form class="showin" hx-put="/ui/{{ coll }}/{{ item.id }}" hx-trigger="change" hx-target="closest .item" hx-swap="outerHTML" aria-label="Mostrar en">
+  <input type="hidden" name="_open" value="0" :value="(typeof open !== 'undefined' && open) ? '1' : '0'">
+  {%- for opt in choices.show_in %}
+  <input type="radio" id="{{ uid }}-si-{{ opt.value }}" name="show_in" value="{{ opt.value }}"{% if item.show_in == opt.value %} checked{% endif %}>
+  <label for="{{ uid }}-si-{{ opt.value }}" title="{{ opt.label }}" data-si="{{ opt.value }}">{{ icon(opt.value) }}<span class="sr-only">{{ opt.label }}</span></label>
+  {%- endfor %}
+</form>
+{%- endmacro -%}
+
+{#- Cascarón de sección del acordeón. -#}
+{%- macro section_shell(key, title, count=none, open=false, entity="") -%}
+<details class="section-acc" id="sec-{{ key }}" data-section="{{ key }}"{% if entity %} data-entity="{{ entity }}"{% endif %}{% if open %} open{% endif %}>
+  <summary>
+    <span class="title">{{ title }}</span>
+    {%- if count is not none %}<span class="count" aria-label="{{ count }} elementos">{{ count }}</span>{% endif %}
+    <span class="dot" data-dot aria-hidden="true"></span>
+  </summary>
+  <div class="section-body">
+    {{ caller() }}
+  </div>
+</details>
+{%- endmacro -%}
+
+{#- Cascarón de ítem: cabecera (asa, resumen, show_in, borrar) + cuerpo plegable.
+    coll: colección /ui; entity: valor de data-entity; show_in: si el ítem tiene show_in. -#}
+{%- macro item_shell(coll, entity, item, title, meta="", show_in=true, open=false, deletable=true, sortable=true) -%}
+{%- set uid = entity ~ "-" ~ (item.id if item.id else "new") -%}
+<article class="item{% if not item.id %} is-new{% endif %}" id="{{ uid }}" data-entity="{{ entity }}"{% if item.id %} data-entity-id="{{ item.id }}" data-id="{{ item.id }}"{% endif %} data-show-in="{{ item.show_in or 'both' }}" x-data="{ open: {{ 'true' if open or not item.id else 'false' }} }" @open-item="open = true" :class="{ 'is-open': open }">
+  <div class="item-head">
+    {%- if sortable and item.id %}
+    <button type="button" class="handle" data-handle aria-label="Mover «{{ title }}». Usa Alt + flechas" title="Arrastra o usa Alt + ↑/↓">{{ icon("grip") }}</button>
+    {%- endif %}
+    <button type="button" class="item-toggle" aria-controls="{{ uid }}-body" :aria-expanded="open.toString()" aria-expanded="{{ 'true' if open or not item.id else 'false' }}" @click="open = !open">
+      <span class="item-summary"><span class="item-title">{{ title }}</span>{% if meta %}<span class="item-meta">{{ meta }}</span>{% endif %}</span>
+      {{ icon("chevron", "chev") }}
+    </button>
+    <span class="dirty-flag">Sin guardar</span>
+    {%- if show_in and item.id %}{{ showin(coll, item, uid) }}{% endif %}
+    {%- if deletable and item.id %}
+    <button type="button" class="btn btn--icon btn--ghost btn--danger" hx-delete="/ui/{{ coll }}/{{ item.id }}" hx-target="closest .item" hx-swap="outerHTML swap:150ms" hx-confirm="¿Eliminar «{{ title }}»? Esta acción no se puede deshacer." aria-label="Eliminar «{{ title }}»">{{ icon("trash") }}</button>
+    {%- endif %}
+  </div>
+  <div class="item-body" id="{{ uid }}-body" x-show="open"{% if not (open or not item.id) %} x-cloak{% endif %}>
+    {{ caller(uid) }}
+  </div>
+</article>
+{%- endmacro -%}
+
+{#- Formulario de un ítem: PUT si existe, POST (crear) si es borrador. -#}
+{%- macro item_form(coll, item, parent, parent_id) -%}
+<form class="item-form" data-dirty-track
+  {%- if item.id %} hx-put="/ui/{{ coll }}/{{ item.id }}"{% else %} hx-post="/ui/{{ parent }}/{{ parent_id }}/{{ coll }}"{% endif %}
+  hx-target="closest .item" hx-swap="outerHTML">
+  <input type="hidden" name="_open" value="1">
+  {{ caller() }}
+  <div class="form-actions">
+    <button type="submit" class="btn btn--primary btn--sm">{{ icon("check") }}{{ "Guardar" if item.id else "Crear" }}</button>
+    {%- if not item.id %}
+    <button type="button" class="btn btn--ghost btn--sm" data-cancel-draft>Cancelar</button>
+    {%- else %}
+    <span class="hint">o <kbd>Ctrl</kbd> + <kbd>S</kbd></span>
+    {%- endif %}
+  </div>
+</form>
+{%- endmacro -%}
+
+{#- Botón "Agregar" que trae un borrador al final de la lista. -#}
+{%- macro add_button(url, list_id, label) -%}
+<button type="button" class="btn btn--add" hx-get="{{ url }}" hx-target="#{{ list_id }}" hx-swap="beforeend">{{ icon("plus") }}{{ label }}</button>
+{%- endmacro -%}

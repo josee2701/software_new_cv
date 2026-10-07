@@ -1,0 +1,83 @@
+{#- Editor (GET /resumes/{id}/edit). Contexto: resume: ResumeOut, profiles, active_profile,
+    density, photo_url. Izquierda: acordeón de secciones; derecha: preview en iframe. -#}
+{% extends "layout.html" %}
+{% from "partials/_macros.html" import icon %}
+{% block title %}{{ resume.name }} · Editor · cv-ats{% endblock %}
+{% block body %}
+<div class="app" id="app" data-resume-id="{{ resume.id }}"
+     x-data="{ onlyDest: false, dest: '{{ active_profile.destination }}', view: 'form' }"
+     @show-form="view = 'form'"
+     :class="{ 'only-dest': onlyDest, 'view-preview': view === 'preview' }" :data-dest="dest" data-dest="{{ active_profile.destination }}">
+
+  <header class="topbar">
+    <a class="brand brand--compact" href="/" title="Volver a mis hojas de vida"><span class="brand-mark" aria-hidden="true">cv</span><span class="sr-only">Mis hojas de vida</span></a>
+    <div class="doc-name">
+      <span class="doc-label">Editando</span>
+      <strong>{{ resume.name }}</strong>
+    </div>
+
+    <form id="toolbar" class="toolbar" hx-get="/ui/resumes/{{ resume.id }}/preview"
+          hx-trigger="load, change, cv-changed from:body delay:500ms" hx-target="#preview" hx-swap="innerHTML"
+          hx-indicator="#preview-pane">
+      <label class="tb-field">
+        <span class="tb-label">Perfil</span>
+        <select class="select select--tb" name="profile_id" @change="dest = $event.target.selectedOptions[0].dataset.destination">
+          {%- for p in profiles %}
+          <option value="{{ p.id }}" data-destination="{{ p.destination }}"{% if p.id == active_profile.id %} selected{% endif %}>{{ p.name }} · {{ "ATS" if p.destination == "ats" else "Correo" }}</option>
+          {%- endfor %}
+        </select>
+      </label>
+      <label class="tb-field">
+        <span class="tb-label">Densidad</span>
+        <select class="select select--tb" name="density">
+          {%- for opt in choices.density %}
+          <option value="{{ opt.value }}"{% if opt.value == density %} selected{% endif %}>{{ opt.label }}</option>
+          {%- endfor %}
+        </select>
+      </label>
+    </form>
+
+    <label class="switch" title="Oculta en el formulario los ítems que no aparecen en el destino del perfil">
+      <input type="checkbox" x-model="onlyDest">
+      <span class="switch-track" aria-hidden="true"></span>
+      <span class="switch-label">Solo este destino</span>
+    </label>
+
+    <span class="spacer"></span>
+    <span id="pages-badge" class="badge pages-badge{% if pages is defined and pages and pages > active_profile.max_pages %} is-over{% endif %}" title="Páginas estimadas (máximo del perfil: {{ active_profile.max_pages }})">{% if pages is defined and pages %}≈ {{ pages }} {{ "pág." if pages == 1 else "págs" }}{% else %}— págs{% endif %}</span>
+    <span class="save-state" id="save-state" aria-live="polite">Guardado</span>
+
+    <a class="btn btn--ghost" href="/resumes/{{ resume.id }}/profiles?profile_id={{ active_profile.id }}">{{ icon("sliders") }}<span class="btn-text">Perfiles</span></a>
+    <button type="button" class="btn" hx-post="/ui/resumes/{{ resume.id }}/validate" hx-include="#toolbar" hx-target="#vpanel-slot" hx-swap="innerHTML">{{ icon("shield") }}<span class="btn-text">Validar</span></button>
+    <button type="button" class="btn btn--primary" hx-get="/ui/resumes/{{ resume.id }}/export" hx-include="#toolbar" hx-target="#modal-slot" hx-swap="innerHTML">{{ icon("download") }}<span class="btn-text">Exportar</span></button>
+
+    <div class="view-tabs" role="tablist" aria-label="Vista">
+      <button type="button" role="tab" :aria-selected="(view === 'form').toString()" aria-selected="true" @click="view = 'form'">Editar</button>
+      <button type="button" role="tab" :aria-selected="(view === 'preview').toString()" aria-selected="false" @click="view = 'preview'">{{ icon("eye") }}Vista previa</button>
+    </div>
+  </header>
+
+  <main id="main" class="pane-form" aria-label="Contenido del CV">
+    {% include "editor/section_basics.html" %}
+    {% include "editor/section_links.html" %}
+    {% include "editor/section_experience.html" %}
+    {% include "editor/section_education.html" %}
+    {% include "editor/section_skills.html" %}
+    {% include "editor/section_projects.html" %}
+    {% include "editor/section_certifications.html" %}
+    {% include "editor/section_languages.html" %}
+    <p class="pane-foot muted">Los cambios se guardan ítem a ítem. <kbd>Ctrl</kbd> + <kbd>S</kbd> guarda todo lo pendiente.</p>
+  </main>
+
+  <section id="preview-pane" class="pane-preview" aria-label="Vista previa del documento">
+    <div id="preview" class="preview">
+      {#- preview_html es opcional: si Backend lo pasa, la primera pintura ya trae el documento;
+          si no, el formulario #toolbar lo pide al cargar. El indicador de páginas vive en la barra. -#}
+      {%- if preview_html is defined %}
+      <iframe class="preview-frame" title="Vista previa del documento" srcdoc="{{ preview_html }}" sandbox="allow-same-origin" data-preview-frame></iframe>
+      {%- else %}<div class="preview-loading"><span class="spinner" aria-hidden="true"></span>Generando vista previa…</div>{% endif %}
+    </div>
+  </section>
+  <div id="vpanel-slot"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{#- Contexto: item: CertificationOut (o borrador), resume_id | resume, errors? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = item.name if item.id else "Nueva certificación" -%}
+{%- set meta = (item.issuer ~ (" · " ~ item.issue_date|mdate if item.issue_date else "")) if item.id else "" -%}
+{% call(uid) item_shell("certifications", "certification", item, title, meta, open=(open if open is defined else false) or errors) %}
+{% call item_form("certifications", item, "resumes", rid) %}
+<div class="grid-2">
+  {{ field(uid, "name", "Nombre", item.name, errors, required=true, maxlength=160) }}
+  {{ field(uid, "issuer", "Emisor", item.issuer, errors, required=true, maxlength=120) }}
+</div>
+<div class="grid-4">
+  {{ field(uid, "issue_date", "Expedición", item.issue_date|ym, errors, type="month") }}
+  {{ field(uid, "expiry_date", "Vencimiento", item.expiry_date|ym, errors, type="month") }}
+  {{ field(uid, "credential_id", "ID de credencial", item.credential_id, errors, maxlength=80) }}
+  {{ field(uid, "url", "URL de verificación", item.url, errors, type="url") }}
+</div>
+{% endcall %}
+{% endcall %}

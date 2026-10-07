@@ -1,0 +1,12 @@
+{#- Enlaces de contacto. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("links", "Enlaces", resume.links|length) %}
+<p class="section-help">Se muestran como texto visible (p. ej. <code>linkedin.com/in/tu-perfil</code>), nunca como «clic aquí».</p>
+<div class="item-list" id="list-links" data-sortable data-order-url="/api/resumes/{{ resume.id }}/links/order">
+  {%- for item in resume.links %}
+  {% include "editor/item_link.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Sin enlaces. LinkedIn es muy recomendable para ATS.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/links/new", "list-links", "Agregar enlace") }}
+{% endcall %}

@@ -1,33 +1,23 @@
-{#- Esqueleto del editor (Fase 4). Las páginas extienden este layout con los bloques
-    `title`, `topbar`, `content` y `scripts`. Estilos: static/css/editor.css. -#}
+{#- Esqueleto de todas las páginas del editor. Contrato: docs/design/EDITOR_CONTEXT.md.
+    Bloques: title, head, body. Globales: static_url, choices. -#}
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true,"error":false},{"code":"[45]..","swap":false,"error":true}],"defaultFocusScroll":false}'>
 <title>{% block title %}cv-ats{% endblock %}</title>
-<link rel="stylesheet" href="/static/css/editor.css">
-<script src="/static/vendor/htmx.min.js"></script>
-<script src="/static/vendor/Sortable.min.js"></script>
+<link rel="stylesheet" href="{{ static_url }}/css/editor.css">
+<script src="{{ static_url }}/vendor/htmx.min.js"></script>
+<script src="{{ static_url }}/vendor/Sortable.min.js"></script>
+<script src="{{ static_url }}/js/editor.js"></script>
 {% block head %}{% endblock %}
-<script defer src="/static/vendor/alpine.min.js"></script>
+<script defer src="{{ static_url }}/vendor/alpine.min.js"></script>
 </head>
-<body hx-headers='{"Accept": "text/html"}'>
-<a class="sr-only" href="#main">Saltar al contenido</a>
-{% block body %}
-<div class="app">
-  <header class="topbar">
-    {% block topbar %}<h1>cv-ats</h1>{% endblock %}
-  </header>
-  <main id="main" class="pane-form">
-    {% block content %}{% endblock %}
-  </main>
-  <section class="pane-preview" aria-label="Vista previa">
-    {% block preview %}{% endblock %}
-  </section>
-</div>
-{% endblock %}
-<div id="live" class="sr-only" aria-live="polite"></div>
-{% block scripts %}{% endblock %}
+<body>
+<a class="skip-link" href="#main">Saltar al contenido</a>
+{% block body %}{% endblock %}
+<div id="modal-slot"></div>
+<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
 </body>
 </html>

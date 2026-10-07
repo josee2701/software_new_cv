@@ -1,0 +1,11 @@
+{#- Experiencia profesional. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("experience", "Experiencia profesional", resume.experiences|length) %}
+<div class="item-list" id="list-experience" data-sortable data-order-url="/api/resumes/{{ resume.id }}/experiences/order">
+  {%- for item in resume.experiences %}
+  {% include "editor/item_experience.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Aún no hay experiencias. Es una sección obligatoria para ATS.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/experiences/new", "list-experience", "Agregar experiencia") }}
+{% endcall %}

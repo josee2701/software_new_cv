@@ -1,0 +1,35 @@
+{#- Logro (fila editable en línea). Contexto: item: AchievementOut (o borrador), experience_id, errors? -#}
+{% from "partials/_macros.html" import icon, showin, errmsg %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set uid = "achievement-" ~ (item.id if item.id else "new") -%}
+<article class="item item--inline{% if not item.id %} is-new{% endif %}" id="{{ uid }}" data-entity="achievement"{% if item.id %} data-entity-id="{{ item.id }}" data-id="{{ item.id }}"{% endif %} data-show-in="{{ item.show_in or 'both' }}">
+  {%- if item.id %}
+  <button type="button" class="handle" data-handle aria-label="Mover logro. Usa Alt + flechas" title="Arrastra o usa Alt + ↑/↓">{{ icon("grip") }}</button>
+  {%- else %}<span class="handle-spacer" aria-hidden="true"></span>{% endif %}
+  <form class="item-form ach-form" data-dirty-track
+    {%- if item.id %} hx-put="/ui/achievements/{{ item.id }}"{% else %} hx-post="/ui/experiences/{{ experience_id }}/achievements"{% endif %}
+    hx-target="closest .item" hx-swap="outerHTML">
+    <div class="ach-text field{% if errors.text %} is-invalid{% endif %}">
+      <label class="sr-only" for="{{ uid }}-text">Logro</label>
+      <textarea class="textarea" id="{{ uid }}-text" name="text" rows="2" maxlength="300" required placeholder="Empieza con verbo de acción: Reduje, Lideré, Automaticé…" aria-describedby="{{ uid }}-text-help{% if errors.text %} {{ uid }}-text-err{% endif %}">{{ item.text or "" }}</textarea>
+      <p class="help" id="{{ uid }}-text-help"><span>Empieza con verbo de acción y cuantifica.</span><span class="counter" data-counter-for="{{ uid }}-text" data-min="40" data-max="220"></span></p>
+      {{ errmsg(errors, "text", uid) }}
+    </div>
+    <div class="ach-metric field{% if errors.metric_value %} is-invalid{% endif %}">
+      <label class="label label--sm" for="{{ uid }}-metric">Métrica</label>
+      <input class="input input--metric" id="{{ uid }}-metric" name="metric_value" value="{{ item.metric_value or '' }}" maxlength="40" placeholder="35%" autocomplete="off">
+      {{ errmsg(errors, "metric_value", uid) }}
+    </div>
+    <div class="ach-actions">
+      <span class="dirty-flag">Sin guardar</span>
+      <button type="submit" class="btn btn--sm btn--primary" aria-label="{{ 'Guardar logro' if item.id else 'Crear logro' }}">{{ icon("check") }}<span class="btn-text-sm">{{ "Guardar" if item.id else "Crear" }}</span></button>
+      {%- if not item.id %}<button type="button" class="btn btn--sm btn--ghost" data-cancel-draft>Cancelar</button>{% endif %}
+    </div>
+  </form>
+  {%- if item.id %}
+  <div class="inline-side">
+    {{ showin("achievements", item, uid) }}
+    <button type="button" class="btn btn--icon btn--ghost btn--danger" hx-delete="/ui/achievements/{{ item.id }}" hx-target="closest .item" hx-swap="outerHTML" hx-confirm="¿Eliminar este logro?" aria-label="Eliminar logro">{{ icon("trash") }}</button>
+  </div>
+  {%- endif %}
+</article>

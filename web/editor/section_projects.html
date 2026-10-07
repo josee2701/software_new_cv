@@ -1,0 +1,11 @@
+{#- Proyectos. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("projects", "Proyectos", resume.projects|length) %}
+<div class="item-list" id="list-projects" data-sortable data-order-url="/api/resumes/{{ resume.id }}/projects/order">
+  {%- for item in resume.projects %}
+  {% include "editor/item_project.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Sin proyectos. Útiles para mostrar trabajo propio u open source.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/projects/new", "list-projects", "Agregar proyecto") }}
+{% endcall %}

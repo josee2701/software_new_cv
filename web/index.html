@@ -1,0 +1,39 @@
+{#- Lista de CVs (GET /). Contexto: resumes: list[ResumeSummaryOut]. -#}
+{% extends "layout.html" %}
+{% from "partials/_macros.html" import icon %}
+{% block title %}Mis hojas de vida · cv-ats{% endblock %}
+{% block body %}
+<header class="appbar">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">cv</span>cv-ats</a>
+  <p class="appbar-note">Editor local · tus datos no salen de este equipo</p>
+</header>
+<main id="main" class="page">
+  <div class="page-head">
+    <div>
+      <h1>Mis hojas de vida</h1>
+      <p class="lead">Un mismo contenido, dos salidas: <strong>Plataforma</strong> (ATS, estricta) y <strong>Correo</strong> (diseño).</p>
+    </div>
+  </div>
+
+  <section class="card new-cv" aria-labelledby="new-cv-title">
+    <h2 id="new-cv-title">Nuevo CV</h2>
+    <form class="new-cv-form" hx-post="/ui/resumes" hx-target="#resume-list" hx-swap="outerHTML">
+      <div class="field">
+        <label class="label" for="new-name">Nombre interno<span class="req" aria-hidden="true">*</span></label>
+        <input class="input" id="new-name" name="name" required maxlength="120" placeholder="Ej. Backend bancario" aria-describedby="new-name-help">
+        <p class="help" id="new-name-help">Solo lo ves tú; no aparece en el documento.</p>
+      </div>
+      <div class="field">
+        <label class="label" for="new-lang">Idioma del CV</label>
+        <select class="select" id="new-lang" name="language">
+          <option value="es" selected>Español</option>
+          <option value="en">Inglés</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn--primary">{{ icon("plus") }}Crear CV</button>
+    </form>
+  </section>
+
+  {% include "partials/resume_list.html" %}
+</main>
+{% endblock %}

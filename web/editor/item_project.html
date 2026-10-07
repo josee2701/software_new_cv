@@ -1,0 +1,34 @@
+{#- Contexto: item: ProjectOut (o borrador), resume_id | resume, errors? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field, textarea %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = item.name if item.id else "Nuevo proyecto" -%}
+{%- set meta = (item.role or "") if item.id else "" -%}
+{% call(uid) item_shell("projects", "project", item, title, meta, open=(open if open is defined else false) or errors) %}
+{% call item_form("projects", item, "resumes", rid) %}
+<div class="grid-2">
+  {{ field(uid, "name", "Nombre", item.name, errors, required=true, maxlength=120) }}
+  {{ field(uid, "role", "Rol", item.role, errors, maxlength=120) }}
+</div>
+<div class="grid-dates">
+  {{ field(uid, "url", "URL (opcional)", item.url, errors, type="url", placeholder="https://github.com/…", cls="field--grow") }}
+  {{ field(uid, "start_date", "Inicio", item.start_date|ym, errors, type="month") }}
+  {{ field(uid, "end_date", "Fin", item.end_date|ym, errors, type="month") }}
+</div>
+{{ textarea(uid, "description", "Descripción", item.description, errors, required=true, maxlength=600, rows=3, rec_min=80, rec_max=400) }}
+{% endcall %}
+{%- if item.id %}
+<div class="field chips-field" data-chips data-save-url="/api/projects/{{ item.id }}/technologies" data-search-url="/api/technologies">
+  <label class="label" for="{{ uid }}-tech">Tecnologías</label>
+  <div class="chips-box combo">
+    <ul class="chips" role="list" data-chip-list>
+      {%- for tech in item.technologies %}
+      <li class="chip" data-value="{{ tech }}"><span>{{ tech }}</span><button type="button" aria-label="Quitar {{ tech }}">×</button></li>
+      {%- endfor %}
+      <li class="chip-input"><input id="{{ uid }}-tech" class="input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="{{ uid }}-tech-list" placeholder="Añadir tecnología…" autocomplete="off"></li>
+    </ul>
+    <ul class="combo-list" id="{{ uid }}-tech-list" role="listbox" aria-label="Sugerencias" hidden></ul>
+  </div>
+</div>
+{%- endif %}
+{% endcall %}

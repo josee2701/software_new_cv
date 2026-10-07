@@ -1,0 +1,71 @@
+{#- Perfiles de exportación (GET /resumes/{id}/profiles). Contexto: resume, profiles, active_profile. -#}
+{% extends "layout.html" %}
+{% from "partials/_macros.html" import icon, label_of %}
+{% block title %}Perfiles · {{ resume.name }} · cv-ats{% endblock %}
+{% block body %}
+<header class="appbar">
+  <a class="btn btn--ghost" href="/resumes/{{ resume.id }}/edit?profile_id={{ active_profile.id }}">{{ icon("back") }}Volver al editor</a>
+  <div class="doc-name"><span class="doc-label">Perfiles de exportación</span><strong>{{ resume.name }}</strong></div>
+</header>
+<main id="main" class="page page--profiles">
+  <nav class="profile-nav" aria-label="Perfiles">
+    <ul role="list">
+      {%- for p in profiles %}
+      <li><a href="/resumes/{{ resume.id }}/profiles?profile_id={{ p.id }}" class="profile-link{% if p.id == active_profile.id %} is-active{% endif %}"{% if p.id == active_profile.id %} aria-current="page"{% endif %}>
+        <span class="option-icon option-icon--{{ p.destination }}">{{ icon(p.destination) }}</span>
+        <span><strong>{{ p.name }}</strong><small>{{ "Plataforma (ATS)" if p.destination == "ats" else "Correo · " ~ label_of("theme", p.theme) }}</small></span>
+      </a></li>
+      {%- endfor %}
+    </ul>
+    <form class="card card--tight new-profile" hx-post="/ui/resumes/{{ resume.id }}/profiles">
+      <h2 class="card-title">Nuevo perfil</h2>
+      <div class="field">
+        <label class="label" for="np-name">Nombre</label>
+        <input class="input" id="np-name" name="name" required maxlength="60" placeholder="Ej. Correo sin foto">
+      </div>
+      <div class="field">
+        <label class="label" for="np-dest">Destino</label>
+        <select class="select" id="np-dest" name="destination">
+          {%- for opt in choices.destination %}<option value="{{ opt.value }}">{{ opt.label }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn--sm">{{ icon("plus") }}Crear perfil</button>
+    </form>
+  </nav>
+
+  <div class="profile-main">
+    {% set profile = active_profile %}
+    {% include "partials/profile_settings.html" %}
+
+    <section class="card" aria-labelledby="sections-title">
+      <div class="card-head">
+        <h2 class="card-title" id="sections-title">Secciones</h2>
+        <span class="save-state" data-sections-state aria-live="polite"></span>
+      </div>
+      <p class="section-help">Arrastra para reordenar, oculta las que no quieras y renombra el título si lo necesitas.
+        {%- if active_profile.destination == "ats" %} Para ATS usa títulos estándar; el orden recomendado es resumen → experiencia → educación → habilidades.{% endif %}</p>
+      <ol class="sec-list" data-sections-editor data-save-url="/api/profiles/{{ active_profile.id }}/sections" role="list">
+        {%- for s in active_profile.sections %}
+        <li class="sec-row{% if not s.visible %} is-hidden{% endif %}" data-section="{{ s.section }}">
+          <button type="button" class="handle" data-handle aria-label="Mover {{ label_of('section_key', s.section) }}. Usa Alt + flechas">{{ icon("grip") }}</button>
+          <span class="sec-name">{{ label_of("section_key", s.section) }}</span>
+          <label class="sr-only" for="sec-title-{{ s.section }}">Título de {{ label_of("section_key", s.section) }}</label>
+          <input class="input input--sm" id="sec-title-{{ s.section }}" name="title_override" value="{{ s.title_override or '' }}" maxlength="60" placeholder="Título por defecto" data-sec-title>
+          <label class="switch switch--sm" title="Mostrar u ocultar la sección">
+            <input type="checkbox" data-sec-visible{% if s.visible %} checked{% endif %} aria-label="Mostrar {{ label_of('section_key', s.section) }}">
+            <span class="switch-track" aria-hidden="true"></span>
+            <span class="switch-label">{{ "Visible" if s.visible else "Oculta" }}</span>
+          </label>
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+
+    <section class="card card--danger" aria-labelledby="danger-title">
+      <h2 class="card-title" id="danger-title">Eliminar perfil</h2>
+      <p class="muted">Las exportaciones ya generadas se conservan.</p>
+      <button type="button" class="btn btn--danger" hx-delete="/ui/profiles/{{ active_profile.id }}" hx-confirm="¿Eliminar el perfil «{{ active_profile.name }}»?">{{ icon("trash") }}Eliminar «{{ active_profile.name }}»</button>
+    </section>
+  </div>
+</main>
+{% endblock %}

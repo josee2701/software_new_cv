@@ -1,0 +1,25 @@
+{#- Contexto: item: SkillCategoryOut (o borrador), resume_id | resume, errors? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field, add_button %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = item.name if item.id else "Nueva categoría" -%}
+{%- set meta = (item.skills|map(attribute="name")|join(", ")) if item.id else "" -%}
+{% call(uid) item_shell("skill-categories", "skill_category", item, title, meta, show_in=false, open=(open if open is defined else false) or errors) %}
+{% call item_form("skill-categories", item, "resumes", rid) %}
+<div class="grid-2">
+  {{ field(uid, "name", "Nombre de la categoría", item.name, errors, required=true, maxlength=60, placeholder="Lenguajes, Cloud & DevOps…") }}
+</div>
+{% endcall %}
+{%- if item.id %}
+{%- set cat_id = item.id %}
+<div class="subsection">
+  <div class="skill-row skill-row--head" aria-hidden="true"><span></span><span>Habilidad</span><span>Nivel</span><span>Años</span><span></span></div>
+  <div class="item-list item-list--sub" id="list-skills-{{ cat_id }}" data-sortable data-order-url="/api/skill-categories/{{ cat_id }}/skills/order">
+    {%- for sk in item.skills %}
+    {%- with item=sk, category_id=cat_id %}{% include "editor/item_skill.html" %}{% endwith %}
+    {%- endfor %}
+  </div>
+  {{ add_button("/ui/skill-categories/" ~ cat_id ~ "/skills/new", "list-skills-" ~ cat_id, "Agregar habilidad") }}
+</div>
+{%- endif %}
+{% endcall %}

@@ -1,0 +1,14 @@
+{#- Habilidades por categoría. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{%- set ns = namespace(n=0) -%}
+{%- for c in resume.skill_categories %}{% set ns.n = ns.n + c.skills|length %}{% endfor -%}
+{% call section_shell("skills", "Habilidades", ns.n) %}
+<p class="section-help">En Plataforma se listan como texto («Categoría: a, b, c»), sin niveles. En Correo se muestran nivel y años.</p>
+<div class="item-list" id="list-skills" data-sortable data-order-url="/api/resumes/{{ resume.id }}/skill-categories/order">
+  {%- for item in resume.skill_categories %}
+  {% include "editor/item_skill_category.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Sin habilidades. ATS exige al menos 5 visibles.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/skill-categories/new", "list-skills", "Agregar categoría") }}
+{% endcall %}

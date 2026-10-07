@@ -1,0 +1,11 @@
+{#- Idiomas. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("languages", "Idiomas", resume.languages|length) %}
+<div class="item-list" id="list-languages" data-sortable data-order-url="/api/resumes/{{ resume.id }}/languages/order">
+  {%- for item in resume.languages %}
+  {% include "editor/item_language.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Sin idiomas.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/languages/new", "list-languages", "Agregar idioma") }}
+{% endcall %}

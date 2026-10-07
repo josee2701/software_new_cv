@@ -1,0 +1,18 @@
+{
+  "choices": {
+    "show_in": {"both": "Ambos", "ats": "Solo Plataforma", "mail": "Solo Correo"},
+    "link_kind": {"linkedin": "LinkedIn", "github": "GitHub", "website": "Sitio web", "portfolio": "Portafolio", "other": "Otro"},
+    "degree_level": {"technical": "Técnico", "technologist": "Tecnólogo", "bachelor": "Pregrado", "specialization": "Especialización", "master": "Maestría", "phd": "Doctorado", "course": "Curso", "other": "Otro"},
+    "skill_level": {"basic": "Básico", "intermediate": "Intermedio", "advanced": "Avanzado", "expert": "Experto"},
+    "language_level": {"A1": "A1 — Principiante", "A2": "A2 — Básico", "B1": "B1 — Intermedio", "B2": "B2 — Intermedio alto", "C1": "C1 — Avanzado", "C2": "C2 — Dominio", "native": "Nativo"},
+    "employment_type": {"full-time": "Tiempo completo", "part-time": "Medio tiempo", "contractor": "Contratista", "freelance": "Independiente", "internship": "Práctica"},
+    "destination": {"ats": "Plataforma (ATS)", "mail": "Correo"},
+    "density": {"compact": "Compacta", "normal": "Normal", "wide": "Amplia"},
+    "theme": {"slate": "Slate", "ocean": "Ocean", "graphite": "Graphite"},
+    "ats_font": {"Arial": "Arial", "Calibri": "Calibri", "Helvetica": "Helvetica", "Georgia": "Georgia"},
+    "date_format": {"MM/YYYY": "03/2024", "MMM YYYY": "mar 2024", "YYYY": "2024"},
+    "max_pages": {"1": "1 página", "2": "2 páginas", "3": "3 páginas"},
+    "section_key": {"summary": "Resumen profesional", "experience": "Experiencia profesional", "education": "Educación", "skills": "Habilidades", "projects": "Proyectos", "certifications": "Certificaciones", "languages": "Idiomas"},
+    "export_format": {"pdf": "PDF", "docx": "Word (DOCX)", "json": "JSON"}
+  }
+}

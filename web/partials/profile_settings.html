@@ -1,0 +1,53 @@
+{#- Ajustes de un perfil (PUT /ui/profiles/{pid}). Contexto: profile: ExportProfileOut, errors? -#}
+{% from "partials/_macros.html" import icon, field, select, check %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set uid = "profile-" ~ profile.id -%}
+<section class="card" id="profile-settings" aria-labelledby="{{ uid }}-title">
+  <form class="item-form" data-dirty-track hx-put="/ui/profiles/{{ profile.id }}" hx-target="#profile-settings" hx-swap="outerHTML">
+    <div class="card-head">
+      <h2 class="card-title" id="{{ uid }}-title">Ajustes</h2>
+      <span class="badge dest-badge--{{ profile.destination }}">{{ icon(profile.destination) }}{{ "Plataforma (ATS)" if profile.destination == "ats" else "Correo" }}</span>
+    </div>
+    <div class="grid-2">
+      {{ field(uid, "name", "Nombre del perfil", profile.name, errors, required=true, maxlength=60) }}
+      {{ select(uid, "density", "Densidad", choices.density, profile.density, errors) }}
+      {{ select(uid, "date_format", "Formato de fecha", choices.date_format, profile.date_format, errors) }}
+      {{ select(uid, "max_pages", "Máximo de páginas", choices.max_pages, profile.max_pages, errors) }}
+    </div>
+
+    {%- if profile.destination == "ats" %}
+    <div class="grid-2">
+      {{ select(uid, "font_family", "Fuente", choices.ats_font, profile.font_family, errors, help="Solo fuentes seguras para ATS.") }}
+    </div>
+    <p class="notice">{{ icon("info") }}<span>Plataforma usa una plantilla de una columna, sin foto ni color: máxima compatibilidad con los ATS.</span></p>
+    {%- else %}
+    <fieldset class="fieldset">
+      <legend class="label">Tema</legend>
+      <div class="theme-cards">
+        {%- for opt in choices.theme %}
+        <label class="theme-card">
+          <input type="radio" name="theme" value="{{ opt.value }}"{% if profile.theme == opt.value %} checked{% endif %}>
+          <span class="swatch swatch--{{ opt.value }}" aria-hidden="true"><i></i><b></b></span>
+          <span class="theme-name">{{ opt.label }}</span>
+        </label>
+        {%- endfor %}
+      </div>
+    </fieldset>
+    <div class="grid-2" x-data="{ custom: {{ 'true' if profile.accent_color else 'false' }}, color: '{{ profile.accent_color or '#36597A' }}' }">
+      <div class="field">
+        <span class="label" id="{{ uid }}-accent-label">Color de acento</span>
+        <div class="color-row">
+          <div class="check"><input type="checkbox" id="{{ uid }}-custom" x-model="custom"><label for="{{ uid }}-custom">Personalizado</label></div>
+          <input type="color" x-model="color" :disabled="!custom" aria-labelledby="{{ uid }}-accent-label" class="color-input">
+          <input class="input input--hex" name="accent_color" :value="custom ? color : ''" value="{{ profile.accent_color or '' }}" x-show="custom" pattern="#[0-9A-Fa-f]{6}" aria-label="Color hexadecimal" @input="color = $event.target.value">
+        </div>
+        <p class="help">Si no, se usa el acento del tema.</p>
+      </div>
+      <div class="field field--check">{{ check(uid, "include_photo", "Incluir foto", profile.include_photo) }}</div>
+    </div>
+    {%- endif %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary btn--sm">{{ icon("check") }}Guardar ajustes</button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,39 @@
+{#- Lista de CVs (fragmento). Contexto: resumes: list[ResumeSummaryOut]. -#}
+{% from "partials/_macros.html" import icon %}
+<section id="resume-list" class="resume-list" aria-labelledby="list-title">
+  <h2 id="list-title" class="list-title">Guardados <span class="count">{{ resumes|length }}</span></h2>
+  {%- if resumes %}
+  <ul class="resume-grid" role="list">
+    {%- for r in resumes %}
+    <li class="resume-card{% if r.is_default %} is-default{% endif %}">
+      <div class="resume-card-head">
+        <span class="doc-thumb" aria-hidden="true">{{ icon("doc") }}</span>
+        <div class="resume-card-title">
+          <h3><a href="/resumes/{{ r.id }}/edit">{{ r.name }}</a></h3>
+          <p class="meta">
+            <span class="badge">{{ "Español" if r.language == "es" else "Inglés" }}</span>
+            {%- if r.is_default %}<span class="badge badge--primary">{{ icon("star") }}Por defecto</span>{% endif %}
+          </p>
+        </div>
+      </div>
+      {%- if r.notes %}<p class="resume-notes">{{ r.notes }}</p>{% endif %}
+      <p class="meta muted">Actualizado {{ r.updated_at|dt }}</p>
+      <div class="resume-actions">
+        <a class="btn btn--primary btn--sm" href="/resumes/{{ r.id }}/edit">{{ icon("edit") }}Editar</a>
+        <button type="button" class="btn btn--sm" hx-post="/ui/resumes/{{ r.id }}/duplicate" hx-target="#resume-list" hx-swap="outerHTML">{{ icon("copy") }}Duplicar</button>
+        {%- if not r.is_default %}
+        <button type="button" class="btn btn--sm btn--ghost" hx-post="/ui/resumes/{{ r.id }}/default" hx-target="#resume-list" hx-swap="outerHTML">{{ icon("star") }}Marcar por defecto</button>
+        {%- endif %}
+        <button type="button" class="btn btn--sm btn--ghost btn--danger btn--end" hx-delete="/ui/resumes/{{ r.id }}" hx-target="#resume-list" hx-swap="outerHTML" hx-confirm="¿Eliminar «{{ r.name }}» y todo su contenido? No se puede deshacer." aria-label="Eliminar «{{ r.name }}»">{{ icon("trash") }}</button>
+      </div>
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- else %}
+  <div class="empty-state">
+    <span class="empty-icon" aria-hidden="true">{{ icon("doc") }}</span>
+    <p><strong>Aún no tienes hojas de vida.</strong></p>
+    <p class="muted">Crea la primera arriba o usa <code>cv-ats seed</code> para cargar un ejemplo.</p>
+  </div>
+  {%- endif %}
+</section>

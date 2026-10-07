@@ -1,0 +1,54 @@
+{#- Contexto: item: ExperienceOut (o borrador), resume_id | resume, errors?, open? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field, select, textarea, check, add_button %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = item.role if item.id else "Nueva experiencia" -%}
+{%- set meta = (item.company ~ " · " ~ (item.start_date|mdate) ~ " – " ~ ("actual" if item.is_current else item.end_date|mdate)) if item.id else "" -%}
+{% call(uid) item_shell("experiences", "experience", item, title, meta, open=(open if open is defined else false) or errors) %}
+{% call item_form("experiences", item, "resumes", rid) %}
+<div class="grid-2">
+  {{ field(uid, "role", "Cargo", item.role, errors, required=true, maxlength=120) }}
+  {{ field(uid, "company", "Empresa", item.company, errors, required=true, maxlength=120) }}
+</div>
+<div class="grid-4">
+  {{ select(uid, "employment_type", "Tipo de vinculación", choices.employment_type, item.employment_type, errors, empty_label="—") }}
+  {{ field(uid, "city", "Ciudad", item.city, errors, maxlength=80) }}
+  {{ field(uid, "country", "País", item.country, errors, maxlength=2, cls="field--narrow", extra='data-uppercase') }}
+  <div class="field field--check">{{ check(uid, "remote", "Remoto", item.remote) }}</div>
+</div>
+<div class="grid-dates" x-data="{ current: {{ 'true' if item.is_current else 'false' }} }">
+  {{ field(uid, "start_date", "Inicio", item.start_date|ym, errors, type="month", required=true) }}
+  {{ field(uid, "end_date", "Fin", item.end_date|ym, errors, type="month", extra=':disabled="current"') }}
+  <div class="field field--check">{{ check(uid, "is_current", "Trabajo actual", item.is_current, extra='x-model="current"') }}</div>
+</div>
+{{ textarea(uid, "description", "Contexto (opcional)", item.description, errors, maxlength=400, rows=2, placeholder="Equipo, producto o alcance en una frase") }}
+{% endcall %}
+
+{%- if item.id %}
+<div class="field chips-field" data-chips data-save-url="/api/experiences/{{ item.id }}/technologies" data-search-url="/api/technologies">
+  <label class="label" for="{{ uid }}-tech">Tecnologías</label>
+  <div class="chips-box combo">
+    <ul class="chips" role="list" data-chip-list>
+      {%- for tech in item.technologies %}
+      <li class="chip" data-value="{{ tech }}"><span>{{ tech }}</span><button type="button" aria-label="Quitar {{ tech }}">×</button></li>
+      {%- endfor %}
+      <li class="chip-input"><input id="{{ uid }}-tech" class="input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="{{ uid }}-tech-list" aria-describedby="{{ uid }}-tech-help" placeholder="Añadir tecnología…" autocomplete="off"></li>
+    </ul>
+    <ul class="combo-list" id="{{ uid }}-tech-list" role="listbox" aria-label="Sugerencias" hidden></ul>
+  </div>
+  <p class="help" id="{{ uid }}-tech-help"><kbd>Enter</kbd> o coma para agregar · <kbd>Retroceso</kbd> quita la última · se guardan al instante.</p>
+</div>
+
+<div class="subsection">
+  <h4 class="sub-title">Logros <span class="count">{{ item.achievements|length }}</span></h4>
+  {%- set exp_id = item.id %}
+  <div class="item-list item-list--sub" id="list-ach-{{ exp_id }}" data-sortable data-order-url="/api/experiences/{{ exp_id }}/achievements/order">
+    {%- for ach in item.achievements %}
+    {%- with item=ach, experience_id=exp_id %}{% include "editor/item_achievement.html" %}{% endwith %}
+    {%- endfor %}
+  </div>
+  <p class="empty">Sin logros. Apunta a 3–5, con métricas.</p>
+  {{ add_button("/ui/experiences/" ~ exp_id ~ "/achievements/new", "list-ach-" ~ exp_id, "Agregar logro") }}
+</div>
+{%- endif %}
+{% endcall %}

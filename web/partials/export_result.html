@@ -1,0 +1,32 @@
+{#- Resultado de exportación (POST /ui/resumes/{id}/export), dentro del modal.
+    Contexto: result: ExportResultOut (job, files, downloads, score, errors, warnings, coverage,
+    findings). files[i] se descarga en downloads[i]. -#}
+{% from "partials/_macros.html" import icon %}
+{%- set job = result.job -%}
+{%- if job.status == "done" %}
+<p class="result-banner result-banner--ok" role="status">{{ icon("check") }}<span>Exportación lista
+  {%- if job.pages %} · {{ job.pages }} {{ "página" if job.pages == 1 else "páginas" }}{% endif %}
+  {%- if result.score is not none %} · puntaje {{ result.score }}/100{% endif %}
+  {%- if job.roundtrip_ok %} · texto extraíble verificado{% endif %}</span></p>
+<ul class="file-list" role="list">
+  {%- for name in result.files %}
+  <li><span class="option-icon">{{ icon("doc") }}</span><span class="file-name" title="{{ name }}">{{ name }}</span><a class="btn btn--sm btn--primary" href="{{ result.downloads[loop.index0] }}" download>{{ icon("download") }}Descargar</a></li>
+  {%- endfor %}
+</ul>
+{%- if result.warnings %}<p class="help">{{ result.warnings }} {{ "advertencia" if result.warnings == 1 else "advertencias" }} de validación: revísalas con «Validar».</p>{% endif %}
+{%- elif job.status == "blocked" %}
+<p class="result-banner result-banner--error" role="alert">{{ icon("error") }}<span>Exportación bloqueada: el destino Plataforma tiene {{ result.errors }} {{ "error" if result.errors == 1 else "errores" }} de validación.</span></p>
+<ul class="findings" role="list">
+  {%- for f in result.findings if f.severity == "error" %}
+  <li class="finding finding--error">
+    <span class="sev-icon">{{ icon("error") }}</span>
+    <p class="msg">{{ f.message }}</p>
+    {%- if f.suggestion %}<p class="suggestion">{{ f.suggestion }}</p>{% endif %}
+    <div class="foot"><code class="rule-id">{{ f.rule_id }}</code>
+      {%- if f.entity and f.entity not in ("profile", "profile_section") %}<button type="button" class="btn btn--sm btn--ghost" data-goto-entity="{{ f.entity }}" data-goto-id="{{ f.entity_id if f.entity_id is not none else '' }}" data-close-dialog>Ir al campo</button>{% endif %}</div>
+  </li>
+  {%- endfor %}
+</ul>
+{%- else %}
+<p class="result-banner result-banner--error" role="alert">{{ icon("error") }}<span>La exportación falló.{% if job.error %} {{ job.error }}{% endif %}</span></p>
+{%- endif %}

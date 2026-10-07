@@ -1,0 +1,47 @@
+{#- Habilidad (fila en línea). Contexto: item: SkillOut (o borrador), category_id, errors? -#}
+{% from "partials/_macros.html" import icon, showin, errmsg %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set uid = "skill-" ~ (item.id if item.id else "new") -%}
+<article class="item item--inline item--skill{% if not item.id %} is-new{% endif %}" id="{{ uid }}" data-entity="skill"{% if item.id %} data-entity-id="{{ item.id }}" data-id="{{ item.id }}"{% endif %} data-show-in="{{ item.show_in or 'both' }}">
+  {%- if item.id %}
+  <button type="button" class="handle" data-handle aria-label="Mover {{ item.name }}. Usa Alt + flechas">{{ icon("grip") }}</button>
+  {%- else %}<span class="handle-spacer" aria-hidden="true"></span>{% endif %}
+  <form class="item-form skill-form" data-dirty-track data-autosave
+    {%- if item.id %} hx-put="/ui/skills/{{ item.id }}"{% else %} hx-post="/ui/skill-categories/{{ category_id }}/skills"{% endif %}
+    hx-target="closest .item" hx-swap="outerHTML">
+    <div class="field{% if errors.name %} is-invalid{% endif %}">
+      <label class="sr-only" for="{{ uid }}-name">Habilidad</label>
+      <input class="input" id="{{ uid }}-name" name="name" value="{{ item.name or '' }}" required maxlength="60" placeholder="Python" autocomplete="off">
+      {{ errmsg(errors, "name", uid) }}
+    </div>
+    <div class="field">
+      <label class="sr-only" for="{{ uid }}-level">Nivel</label>
+      <select class="select" id="{{ uid }}-level" name="level">
+        <option value="">Sin nivel</option>
+        {%- for opt in choices.skill_level %}
+        <option value="{{ opt.value }}"{% if item.level == opt.value %} selected{% endif %}>{{ opt.label }}</option>
+        {%- endfor %}
+      </select>
+    </div>
+    <div class="field{% if errors.years %} is-invalid{% endif %}">
+      <label class="sr-only" for="{{ uid }}-years">Años</label>
+      <input class="input input--years" id="{{ uid }}-years" name="years" type="number" min="0" max="50" value="{{ item.years if item.years is not none else '' }}" placeholder="—">
+      {{ errmsg(errors, "years", uid) }}
+    </div>
+    {%- if not item.id %}
+    <div class="ach-actions">
+      <button type="submit" class="btn btn--sm btn--primary">{{ icon("check") }}Crear</button>
+      <button type="button" class="btn btn--sm btn--ghost" data-cancel-draft>Cancelar</button>
+    </div>
+    {%- else %}
+    <button type="submit" class="sr-only">Guardar {{ item.name }}</button>
+    {%- endif %}
+  </form>
+  {%- if item.id %}
+  <div class="inline-side">
+    <span class="dirty-flag">Sin guardar</span>
+    {{ showin("skills", item, uid) }}
+    <button type="button" class="btn btn--icon btn--ghost btn--danger" hx-delete="/ui/skills/{{ item.id }}" hx-target="closest .item" hx-swap="outerHTML" hx-confirm="¿Eliminar «{{ item.name }}»?" aria-label="Eliminar {{ item.name }}">{{ icon("trash") }}</button>
+  </div>
+  {%- endif %}
+</article>

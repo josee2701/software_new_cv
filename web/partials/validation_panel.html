@@ -1,0 +1,48 @@
+{#- Panel de validación. Contexto: report {score, errors, warnings, findings: list[Finding]},
+    profile: ExportProfileOut, blocked: bool. -#}
+{% from "partials/_macros.html" import icon %}
+{%- set sec_names = {"basics": "Datos personales", "links": "Enlaces", "summary": "Resumen", "experience": "Experiencia", "achievement": "Logros", "education": "Educación", "skills": "Habilidades", "projects": "Proyectos", "certifications": "Certificaciones", "languages": "Idiomas", "profile": "Perfil", "doc": "Documento", "pdf": "PDF", "export": "Exportación", "all": "General"} -%}
+{%- set infos = report.findings|selectattr("severity", "equalto", "info")|list -%}
+<aside class="vpanel" id="vpanel" aria-labelledby="vpanel-title" x-data="{ f: { error: true, warning: true, info: true } }" tabindex="-1" data-autofocus>
+  <header class="vpanel-head">
+    <div class="score{% if report.score < 70 %} is-low{% elif report.score < 90 %} is-mid{% endif %}" role="img" aria-label="Puntaje {{ report.score }} de 100"><span>{{ report.score }}</span></div>
+    <div class="vpanel-title">
+      <h2 id="vpanel-title">Validación</h2>
+      <p class="muted">Perfil <strong>{{ profile.name }}</strong> · {{ "Plataforma (ATS)" if profile.destination == "ats" else "Correo" }}</p>
+    </div>
+    <button type="button" class="btn btn--icon btn--ghost" data-close-panel aria-label="Cerrar panel de validación">{{ icon("x") }}</button>
+  </header>
+  <div class="vpanel-filters" role="group" aria-label="Filtrar por severidad">
+    <button type="button" class="sev-filter sev-filter--error" :aria-pressed="f.error.toString()" aria-pressed="true" @click="f.error = !f.error">{{ icon("error") }}{{ report.errors }} {{ "error" if report.errors == 1 else "errores" }}</button>
+    <button type="button" class="sev-filter sev-filter--warning" :aria-pressed="f.warning.toString()" aria-pressed="true" @click="f.warning = !f.warning">{{ icon("warning") }}{{ report.warnings }} {{ "advertencia" if report.warnings == 1 else "advertencias" }}</button>
+    <button type="button" class="sev-filter sev-filter--info" :aria-pressed="f.info.toString()" aria-pressed="true" @click="f.info = !f.info">{{ icon("info") }}{{ infos|length }} info</button>
+  </div>
+  {%- if blocked %}
+  <p class="blocked-banner" role="alert">{{ icon("error") }}La exportación a Plataforma está bloqueada: {{ report.errors }} {{ "error" if report.errors == 1 else "errores" }} por corregir.</p>
+  {%- elif not report.findings %}
+  <p class="ok-banner">{{ icon("check") }}Sin hallazgos. Listo para exportar.</p>
+  {%- endif %}
+  <div class="vpanel-body">
+    {%- for f in report.findings %}
+    {%- if loop.changed(f.section) %}
+    {%- if not loop.first %}</ul>{% endif %}
+    <h3 class="vpanel-group">{{ sec_names.get(f.section, f.section or "General") }}</h3>
+    <ul class="findings" role="list">
+    {%- endif %}
+      <li class="finding finding--{{ f.severity }}" x-show="f.{{ f.severity }}">
+        <span class="sev-icon">{{ icon(f.severity) }}</span>
+        <p class="msg"><span class="sr-only">{{ {"error": "Error", "warning": "Advertencia", "info": "Info"}[f.severity] }}: </span>{{ f.message }}</p>
+        {%- if f.suggestion %}<p class="suggestion">{{ f.suggestion }}</p>{% endif %}
+        <div class="foot">
+          <code class="rule-id">{{ f.rule_id }}</code>
+          {%- if f.entity in ("profile", "profile_section") %}
+          <a class="btn btn--sm btn--ghost" href="/resumes/{{ profile.resume_id }}/profiles?profile_id={{ profile.id }}">Abrir perfil {{ icon("back", "icon--flip") }}</a>
+          {%- elif f.entity %}
+          <button type="button" class="btn btn--sm btn--ghost" data-goto-entity="{{ f.entity }}" data-goto-id="{{ f.entity_id if f.entity_id is not none else '' }}">Ir al campo {{ icon("back", "icon--flip") }}</button>
+          {%- endif %}
+        </div>
+      </li>
+    {%- if loop.last %}</ul>{% endif %}
+    {%- endfor %}
+  </div>
+</aside>

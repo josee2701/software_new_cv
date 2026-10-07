@@ -1,0 +1,61 @@
+{#- Datos personales + resumen + foto. Contexto: resume (ResumeOut), photo_url, errors? -#}
+{% from "partials/_macros.html" import icon, field, textarea, section_shell %}
+{%- set b = resume.basics -%}
+{%- set errors = errors if errors is defined else {} -%}
+{% call section_shell("basics", "Datos personales", open=true, entity="basics") %}
+<div class="basics" data-entity="basics">
+  <div class="photo-field" data-photo data-upload-url="/ui/resumes/{{ resume.id }}/photo">
+    <div class="photo-current">
+      {%- if photo_url %}
+      <img src="{{ photo_url }}" alt="Foto actual" width="96" height="96">
+      {%- else %}
+      <span class="photo-empty" aria-hidden="true">{{ icon("user") }}</span>
+      {%- endif %}
+    </div>
+    <div class="photo-side">
+      <p class="label" id="photo-label">Foto</p>
+      <div class="photo-actions">
+        <label class="btn btn--sm file-btn">{{ icon("upload") }}{{ "Cambiar" if photo_url else "Subir foto" }}
+          <input type="file" class="sr-only" accept="image/jpeg,image/png,image/webp" data-photo-input aria-describedby="photo-notice">
+        </label>
+        {%- if photo_url %}
+        <button type="button" class="btn btn--sm btn--ghost btn--danger" hx-delete="/ui/resumes/{{ resume.id }}/photo" hx-target="#sec-basics" hx-swap="outerHTML">Quitar</button>
+        {%- endif %}
+      </div>
+      <p class="notice" id="photo-notice">{{ icon("info") }}<span>No se incluye en el destino Plataforma.</span></p>
+    </div>
+    <div class="cropper" data-cropper hidden>
+      <div class="crop-stage" data-crop-stage tabindex="0" role="img" aria-label="Recorte cuadrado. Arrastra o usa las flechas para encuadrar; + y − para zoom.">
+        <img data-crop-img alt="">
+      </div>
+      <div class="crop-controls">
+        <label class="label" for="crop-zoom">Zoom</label>
+        <input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1" data-crop-zoom>
+        <div class="form-actions">
+          <button type="button" class="btn btn--primary btn--sm" data-crop-apply>{{ icon("check") }}Usar recorte</button>
+          <button type="button" class="btn btn--ghost btn--sm" data-crop-cancel>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form class="item-form basics-form" data-dirty-track hx-put="/ui/resumes/{{ resume.id }}/basics" hx-target="#sec-basics" hx-swap="outerHTML">
+    <div class="grid-2">
+      {{ field("basics", "full_name", "Nombre completo", b.full_name, errors, required=true, maxlength=120, autocomplete="name") }}
+      {{ field("basics", "headline", "Titular", b.headline, errors, required=true, maxlength=160, placeholder="Ingeniero de Sistemas · Backend Python") }}
+      {{ field("basics", "email", "Correo electrónico", b.email, errors, type="email", required=true, autocomplete="email") }}
+      {{ field("basics", "phone", "Teléfono", b.phone, errors, type="tel", required=true, autocomplete="tel", help="Se guarda en formato internacional (+57…).") }}
+    </div>
+    <div class="grid-3">
+      {{ field("basics", "city", "Ciudad", b.city, errors, required=true, maxlength=80) }}
+      {{ field("basics", "region", "Departamento / región", b.region, errors, maxlength=80) }}
+      {{ field("basics", "country", "País", b.country, errors, required=true, maxlength=2, help="Código ISO: CO, MX, US…", cls="field--narrow", extra='data-uppercase') }}
+    </div>
+    {{ textarea("basics", "summary", "Resumen profesional", b.summary, errors, maxlength=1200, rows=5, rec_min=200, rec_max=600, help="Entre 200 y 600 caracteres, en tercera persona implícita (sin «yo»).") }}
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary btn--sm">{{ icon("check") }}Guardar</button>
+      <span class="hint">o <kbd>Ctrl</kbd> + <kbd>S</kbd></span>
+    </div>
+  </form>
+</div>
+{% endcall %}

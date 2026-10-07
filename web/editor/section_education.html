@@ -1,0 +1,11 @@
+{#- Educación. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("education", "Educación", resume.education|length) %}
+<div class="item-list" id="list-education" data-sortable data-order-url="/api/resumes/{{ resume.id }}/education/order">
+  {%- for item in resume.education %}
+  {% include "editor/item_education.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Aún no hay estudios. Es una sección obligatoria para ATS.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/education/new", "list-education", "Agregar estudio") }}
+{% endcall %}

@@ -1,0 +1,53 @@
+{#- Modal de exportación (GET /ui/resumes/{id}/export). Contexto: resume, profiles,
+    active_profile, report: ValidationReportOut | None (último del perfil activo). -#}
+{% from "partials/_macros.html" import icon %}
+<dialog class="modal" id="export-modal" aria-labelledby="export-title" data-autoshow
+        x-data="{ dest: '{{ active_profile.destination }}' }">
+  <form hx-post="/ui/resumes/{{ resume.id }}/export" hx-target="#export-body" hx-swap="innerHTML" hx-disabled-elt="find button[type=submit]">
+    <header class="modal-head">
+      <h2 id="export-title">Exportar «{{ resume.name }}»</h2>
+      <button type="button" class="btn btn--icon btn--ghost" data-close-dialog aria-label="Cerrar">{{ icon("x") }}</button>
+    </header>
+    <div class="modal-body" id="export-body">
+      <fieldset class="fieldset">
+        <legend class="label">Perfil</legend>
+        <div class="option-cards option-cards--profiles">
+          {%- for p in profiles %}
+          <label class="option-card">
+            <input type="radio" name="profile_id" value="{{ p.id }}"{% if p.id == active_profile.id %} checked{% endif %} @change="dest = '{{ p.destination }}'">
+            <span class="option-icon option-icon--{{ p.destination }}">{{ icon(p.destination) }}</span>
+            <span><strong>{{ p.name }}</strong><small>{{ "Plataforma (ATS)" if p.destination == "ats" else "Correo · " ~ (p.theme or "slate") }}</small></span>
+          </label>
+          {%- endfor %}
+        </div>
+      </fieldset>
+      <fieldset class="fieldset">
+        <legend class="label">Formatos</legend>
+        <div class="option-cards">
+          {%- for opt in choices.export_format %}
+          <label class="option-card">
+            <input type="checkbox" name="formats" value="{{ opt.value }}"{% if opt.value == "pdf" %} checked{% endif %}>
+            <span class="option-icon">{{ icon("doc") }}</span>
+            <span><strong>{{ opt.label }}</strong></span>
+          </label>
+          {%- endfor %}
+        </div>
+      </fieldset>
+      <div class="check-list">
+        <div class="check" x-show="dest === 'mail'">
+          <input type="hidden" name="with_photo_variant" value="false">
+          <input type="checkbox" id="exp-nophoto" name="with_photo_variant" value="true">
+          <label for="exp-nophoto">Generar también la versión sin foto</label>
+        </div>
+        <p class="help help--icon">{{ icon("info") }}Cada exportación guarda automáticamente una versión (snapshot) del CV.</p>
+      </div>
+      {%- if report is defined and report %}
+      <p class="report-line{% if report.errors %} is-error{% endif %}">{{ icon("shield") }}Última validación: <strong>{{ report.score }}/100</strong> · {{ report.errors }} {{ "error" if report.errors == 1 else "errores" }} · {{ report.warnings }} {{ "advertencia" if report.warnings == 1 else "advertencias" }}{% if report.errors %}<span x-show="dest === 'ats'"> — Plataforma quedará bloqueada</span>{% endif %}</p>
+      {%- endif %}
+    </div>
+    <footer class="modal-foot">
+      <button type="button" class="btn" data-close-dialog>Cancelar</button>
+      <button type="submit" class="btn btn--primary">{{ icon("download") }}Exportar</button>
+    </footer>
+  </form>
+</dialog>

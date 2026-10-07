@@ -1,0 +1,4 @@
+{#- Fragmento de preview (GET /ui/resumes/{id}/preview). Contexto: preview_html, pages, max_pages.
+    El indicador de páginas se actualiza fuera de banda. -#}
+<iframe class="preview-frame" title="Vista previa del documento" srcdoc="{{ preview_html }}" sandbox="allow-same-origin" data-preview-frame></iframe>
+<span id="pages-badge" class="badge pages-badge{% if pages and pages > max_pages %} is-over{% endif %}" hx-swap-oob="true" title="Páginas estimadas (máximo del perfil: {{ max_pages }})">{% if pages %}≈ {{ pages }} {{ "pág." if pages == 1 else "págs" }}{% else %}— págs{% endif %}{% if pages and pages > max_pages %} · máx. {{ max_pages }}{% endif %}</span>

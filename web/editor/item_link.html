@@ -1,0 +1,14 @@
+{#- Contexto: item: ContactLinkOut (o borrador), resume_id | resume, errors? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field, select, label_of %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = label_of("link_kind", item.kind) if item.id else "Nuevo enlace" -%}
+{% call(uid) item_shell("links", "contact_link", item, title, item.url or "", show_in=false, open=(open if open is defined else false) or errors) %}
+{% call item_form("links", item, "resumes", rid) %}
+<div class="grid-link">
+  {{ select(uid, "kind", "Tipo", choices.link_kind, item.kind, errors, required=true) }}
+  {{ field(uid, "url", "URL", item.url, errors, type="url", required=true, placeholder="https://linkedin.com/in/…") }}
+  {{ field(uid, "label", "Etiqueta (opcional)", item.label, errors, maxlength=80) }}
+</div>
+{% endcall %}
+{% endcall %}

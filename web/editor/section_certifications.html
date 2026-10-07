@@ -1,0 +1,11 @@
+{#- Certificaciones. Contexto: resume. -#}
+{% from "partials/_macros.html" import section_shell, add_button %}
+{% call section_shell("certifications", "Certificaciones", resume.certifications|length) %}
+<div class="item-list" id="list-certifications" data-sortable data-order-url="/api/resumes/{{ resume.id }}/certifications/order">
+  {%- for item in resume.certifications %}
+  {% include "editor/item_certification.html" %}
+  {%- endfor %}
+</div>
+<p class="empty">Sin certificaciones.</p>
+{{ add_button("/ui/resumes/" ~ resume.id ~ "/certifications/new", "list-certifications", "Agregar certificación") }}
+{% endcall %}

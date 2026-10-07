@@ -1,0 +1,28 @@
+{#- Contexto: item: EducationOut (o borrador), resume_id | resume, errors? -#}
+{% from "partials/_macros.html" import item_shell, item_form, field, select, textarea, check %}
+{%- set errors = errors if errors is defined else {} -%}
+{%- set rid = resume_id if resume_id is defined else resume.id -%}
+{%- set title = item.degree if item.id else "Nuevo estudio" -%}
+{%- set meta = (item.institution ~ (" · " ~ (item.start_date|mdate) ~ " – " ~ ("en curso" if item.in_progress else item.end_date|mdate) if item.start_date else "")) if item.id else "" -%}
+{% call(uid) item_shell("education", "education", item, title, meta, open=(open if open is defined else false) or errors) %}
+{% call item_form("education", item, "resumes", rid) %}
+<div class="grid-2">
+  {{ field(uid, "degree", "Título", item.degree, errors, required=true, maxlength=160) }}
+  {{ field(uid, "institution", "Institución", item.institution, errors, required=true, maxlength=160) }}
+</div>
+<div class="grid-3">
+  {{ select(uid, "level", "Nivel", choices.degree_level, item.level, errors, empty_label="—") }}
+  {{ field(uid, "field", "Área / énfasis", item.field, errors, maxlength=120) }}
+  {{ field(uid, "city", "Ciudad", item.city, errors, maxlength=80) }}
+</div>
+<div class="grid-dates" x-data="{ current: {{ 'true' if item.in_progress else 'false' }} }">
+  {{ field(uid, "start_date", "Inicio", item.start_date|ym, errors, type="month") }}
+  {{ field(uid, "end_date", "Fin", item.end_date|ym, errors, type="month", extra=':disabled="current"') }}
+  <div class="field field--check">{{ check(uid, "in_progress", "En curso", item.in_progress, extra='x-model="current"') }}</div>
+</div>
+<div class="grid-2">
+  {{ field(uid, "gpa", "Promedio (opcional)", item.gpa, errors, maxlength=10, cls="field--narrow") }}
+</div>
+{{ textarea(uid, "description", "Descripción (opcional)", item.description, errors, maxlength=400, rows=2) }}
+{% endcall %}
+{% endcall %}
