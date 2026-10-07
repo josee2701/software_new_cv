@@ -13,6 +13,8 @@ from app.config import PROJECT_ROOT, get_settings
 from app.routers import (
     experiences,
     exports,
+    importer,
+    match,
     pending,
     preview,
     profiles,
@@ -67,6 +69,8 @@ def create_app() -> FastAPI:
         preview,
         exports,
         validate,
+        importer,
+        match,
         pending,
     )
     for module in routers:

@@ -68,10 +68,11 @@ strict = true
 plugins = ["pydantic.mypy"]
 files = [
   "app", "models", "validator", "export", "importer", "services", "schemas", "render",
+  "match",
 ]
 
 [[tool.mypy.overrides]]
-module = ["weasyprint", "weasyprint.*"]
+module = ["weasyprint", "weasyprint.*", "sklearn", "sklearn.*"]
 ignore_missing_imports = true  # WeasyPrint no publica tipos (py.typed)
 
 [tool.pytest.ini_options]

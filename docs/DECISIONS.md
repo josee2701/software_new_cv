@@ -247,3 +247,92 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
   función que `export`); sale con 1 si el destino es ats y hay errores, 2 si el CV/perfil no existe.
 - Pronombres (resumen/logros) como constantes en `validator/text.py`; verbos en
   `validator/data/verbs_{es,en}.txt` (243 es: infinitivo + pretérito 1ª y 3ª; 235 en: base + pasado).
+
+## 2026-10-06 — Jefe (aprobación del contrato del editor)
+
+- `docs/design/EDITOR_CONTEXT.md` queda **aprobado** como contrato Diseño ⇄ Backend para la Fase 4.
+  Backend implementa las rutas `/ui` exactamente como están documentadas allí. Enmiendas del jefe:
+  1. **Foto**: la lógica de imagen (Pillow: validar mime/tamaño, recorte cuadrado centrado, `_400.jpg`,
+     sha256 para dedupe) vive en `services/asset.py` y la usan **ambas** rutas: `POST /ui/resumes/{id}/photo`
+     (contrato) y `POST /api/assets` (spec §6). El servidor revalida y recorta aunque el cliente ya recorte.
+  2. El test `test_pending_endpoints_return_501` se queda solo con las rutas que sigan sin implementar.
+- Equipos a partir de aquí: **Backend-UI** (`app/routers/ui.py`, `app/web.py`, `services/asset.py`,
+  `tests/test_ui.py`), **Backend-Import** (importer/, match/), **Diseño** (web/, static/, docs/design/).
+
+## 2026-10-06 — Backend-Import (F5-01, F5-02, §11 y §12)
+
+- **Líneas con layout**: PDF y DOCX se normalizan a `importer.lines.Line`
+  (texto, tamaño, negrita, sangría, página, columna, estilo). En PDF las líneas se arman desde
+  `extract_words(extra_attrs=["size","fontname"])`; negrita = ≥60% de los caracteres en una fuente
+  "bold".
+- **Dos columnas**: si existe una banda vertical vacía de ≥12 pt entre el 15% y el 70% del ancho y
+  cada lado tiene ≥12% de las palabras, la página se parte en dos. La columna con más palabras es
+  `main` y la otra `side` (sidebar de LinkedIn o de la plantilla de correo). El sectionizer lleva
+  **una sección actual por columna**, para que el nombre del cuerpo no caiga en la última sección
+  de la barra lateral.
+- **Segmentación de ítems en dos modos**: modo A, cuando la sección tiene líneas en negrita que no
+  son etiquetas (PDF/DOCX de esta app, LinkedIn), cada negrita abre un ítem; modo B, texto plano,
+  las líneas con rango de fechas son anclas y el título son hasta 2 líneas anteriores. Sin fechas,
+  cada línea es un ítem (listas de certificaciones). Una línea solo corta la búsqueda del título si
+  parece oración (termina en "." y más de 8 palabras), para no partir siglas como "S.A.S.".
+- **Fechas**: `MM/YYYY`, `marzo de 2021`, `Mar 2021` y `2021`, con rangos separados por
+  `– — - a al hasta to until` y fin abierto (`Actualidad`, `Present`, `En curso`). La confianza
+  depende de la precisión: 0,95 numérica, 0,9 con nombre de mes, 0,7 solo año. Se descartan las
+  duraciones tipo "(2 años 3 meses)".
+- **Separadores de título**: `—` (0,92), `|` (0,85), `–` (0,85), `-` (0,8), `@` (0,8) y por último
+  "en"/"at" con `rsplit` (0,7). En certificaciones solo `—` y `|`, porque los nombres suelen
+  llevar guiones ("Solutions Architect – Associate"). Si el título llega en MAYÚSCULAS se pasa a
+  tipo título y la confianza baja 0,15, así queda marcado para revisión.
+- **Nombre partido en dos líneas** (LinkedIn): las líneas siguientes con el mismo tamaño de fuente
+  se unen al nombre y no se reusan como headline ni como contacto.
+- **El preview no escribe nunca**. `ImportService.apply(mode=...)`: `replace` (por defecto) vacía
+  las listas de contenido y luego inserta; `append` agrega después de lo existente, fusiona
+  categorías de habilidades por nombre (sin duplicar skills) y omite enlaces por `kind` e idiomas
+  repetidos. Los campos de `basics` solo se sobrescriben cuando el preview trae valor.
+- **Validación por ítem**: cada elemento pasa por su esquema `*Create`; los inválidos se omiten y
+  se reportan en `skipped` con `path` y motivo (p. ej. `experiences.1`), y el resto se escribe en
+  una sola transacción. Motivo: un CV importado casi siempre trae algún bloque incompleto y
+  abortar todo sería peor para el usuario.
+- **§17.4 medido**: reimportar el PDF `Plataforma` del CV de ejemplo recupera **88/89 campos
+  (98,9%)** con confianza ≥0,8, y el DOCX lo mismo. El único campo que no vuelve es el país de la
+  experiencia remota, porque la plantilla ats imprime "Bogotá · Remoto" sin país. La comparación
+  solo cuenta campos que la plantilla ats realmente imprime (no el tipo de contrato ni los niveles
+  de habilidad) y normaliza URLs con `url_display`.
+- **Match**: TF-IDF (scikit-learn) sobre `[vacante, texto del CV renderizado en ats]` con un
+  analizador propio: unigramas y bigramas de tokens adyacentes que no son stopwords (es/en, más
+  relleno típico de ofertas). Los tokens conservan `+ # . / -`, así sobreviven `C++`, `CI/CD` y
+  `Node.js`. Las tecnologías del catálogo se detectan por frase completa y pesan el doble, así
+  quedan arriba del top-40 y se muestran con su nombre canónico. Los nombres cortos o en
+  mayúsculas (`Go`, `R`, `REST`) se buscan respetando mayúsculas para no confundirlos con palabras
+  comunes.
+- **`GET /api/postings/{id}/match` recalcula** `found_in_cv` contra el CV actual y lo persiste, así
+  el panel refleja los cambios del editor sin volver a pegar la vacante. `coverage` = presentes /
+  total de palabras clave.
+
+## 2026-10-06 — Diseño (Fase 4, editor)
+
+- **Contrato del editor**: `docs/design/EDITOR_CONTEXT.md` (rutas `/ui/...`, contexto por template,
+  eventos y endpoints `/api` que usa el JS). Decisiones que lo sostienen:
+  - Los templates reciben los `*Out` reales sin transformar; solo 3 filtros (`ym`, `mdate`, `dt`)
+    y dos globales (`static_url`, `choices`).
+  - `choices` se arma desde `web/i18n/ui_es.json` (labels de UI, propiedad de Diseño) zipeado con
+    los enums de Backend, para que las etiquetas no vivan en código Python.
+  - Form → esquema: clave ausente = sin cambio, `""` = `None`, clave repetida = gana la última
+    (de ahí el `<input type="hidden" value="false">` antes de cada checkbox).
+  - Campo `_open` (no es del esquema): el ítem conserva expandido/colapsado al re-renderizarse.
+  - 422 = el mismo partial con `errors` y lo enviado (htmx hace swap de 422 y no de otros 4xx);
+    el resto de errores van como texto plano y el JS los muestra como toast.
+  - `data-entity` del editor = `entity` del validador (`contact_link`, no `link`);
+    `profile`/`profile_section` enlazan a la pantalla de perfiles en vez de a un campo.
+  - El modal de exportación no ofrece «guardar snapshot»: `ExportService` siempre crea uno;
+    solo se informa. `formats` es el único campo repetible del contrato.
+- **Reordenar, tecnologías y secciones del perfil** usan las rutas `/api` existentes desde el JS
+  (no hay `/ui` para eso); tras cada llamada el JS emite `cv-changed`.
+- **Prototipo** `docs/design/editor_preview.py`: arma datos con forma de `ResumeOut` desde
+  `sample_context_es.json` y escribe páginas estáticas en `docs/design/out/editor/`. Enlaza
+  `static/` con ruta relativa; quita el disparador `load` de la barra porque sin servidor
+  `/ui/.../preview` no existe (la preview ya va incrustada).
+- **Capturas**: Playwright MCP no sirve aquí (intenta crear `.playwright-mcp` en el cwd de la
+  sesión, que es el disco externo muerto, y bloquea `file://`). Se usa **Chrome headless**
+  (`google-chrome-stable --headless=new --screenshot`) contra un `python -m http.server` local,
+  con `--user-data-dir` en `~/.cache`. Salida en `docs/design/out/editor/shots/`.

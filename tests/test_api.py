@@ -207,9 +207,6 @@ def test_domain_errors(client: TestClient) -> None:
     ("method", "path"),
     [
         ("post", "/api/assets"),
-        ("post", "/api/resumes/1/import"),
-        ("post", "/api/resumes/1/postings"),
-        ("get", "/api/postings/1/match"),
     ],
 )
 def test_pending_endpoints_return_501(client: TestClient, method: str, path: str) -> None:

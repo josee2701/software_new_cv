@@ -157,9 +157,40 @@ def import_(
     file: Annotated[Path, typer.Argument(help="PDF o DOCX")],
     resume: Annotated[int, typer.Option(help="Id del CV")],
     apply: Annotated[bool, typer.Option(help="Aplicar sin revisar")] = False,
+    append: Annotated[
+        bool, typer.Option(help="Con --apply: agregar en vez de reemplazar el contenido")
+    ] = False,
 ) -> None:
-    """Importa un CV desde PDF/DOCX."""
-    _pending("import")
+    """Importa un CV desde PDF/DOCX: muestra la vista previa y, con --apply, la aplica."""
+    from app.db import get_sessionmaker
+    from services.importer import ImportService
+
+    if not file.is_file():
+        raise typer.BadParameter(f"No existe el archivo {file}")
+    with get_sessionmaker()() as session:
+        service = ImportService(session)
+        preview = service.preview(resume, file.read_bytes(), file.name)
+        b = preview.basics
+        typer.echo(f"Nombre: {b.full_name.value} ({b.full_name.confidence:.0%})")
+        typer.echo(f"Correo: {b.email.value} · Teléfono: {b.phone.value}")
+        counts = {
+            "experiencias": len(preview.experiences),
+            "educación": len(preview.education),
+            "categorías de habilidades": len(preview.skill_categories),
+            "proyectos": len(preview.projects),
+            "certificaciones": len(preview.certifications),
+            "idiomas": len(preview.languages),
+        }
+        typer.echo(", ".join(f"{n} {label}" for label, n in counts.items()))
+        for warning in preview.warnings:
+            typer.echo(f"  ! {warning}")
+        if not apply:
+            typer.echo("Vista previa solamente (usa --apply para escribir).")
+            return
+        result = service.apply(resume, preview, "append" if append else "replace")
+        typer.echo("Aplicado: " + ", ".join(f"{k}={v}" for k, v in result.created.items()))
+        for item in result.skipped:
+            typer.echo(f"  omitido {item.path}: {item.reason}")
 
 
 @app.command()
