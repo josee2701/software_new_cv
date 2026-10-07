@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import PROJECT_ROOT, get_settings
 from app.routers import (
+    assets,
     experiences,
     exports,
     importer,
@@ -21,6 +22,7 @@ from app.routers import (
     resumes,
     sections,
     technologies,
+    ui,
     validate,
 )
 from schemas.errors import to_field_errors
@@ -69,12 +71,15 @@ def create_app() -> FastAPI:
         preview,
         exports,
         validate,
+        assets,
         importer,
         match,
         pending,
     )
     for module in routers:
         app.include_router(module.router, prefix=API_PREFIX)
+    # Editor: pages ("/", "/resumes/{id}/edit") and HTMX fragments ("/ui/..."), no "/api" prefix.
+    app.include_router(ui.router)
     static_dir = PROJECT_ROOT / "static"
     if static_dir.is_dir():
         app.mount("/static", StaticFiles(directory=static_dir), name="static")

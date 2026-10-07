@@ -203,16 +203,6 @@ def test_domain_errors(client: TestClient) -> None:
     assert r.status_code == 422
 
 
-@pytest.mark.parametrize(
-    ("method", "path"),
-    [
-        ("post", "/api/assets"),
-    ],
-)
-def test_pending_endpoints_return_501(client: TestClient, method: str, path: str) -> None:
-    assert client.request(method.upper(), path).status_code == 501
-
-
 def test_preview_endpoint(client: TestClient) -> None:
     from render.renderer import TEMPLATES_DIR
 

@@ -336,3 +336,52 @@ cerradas en `CV_ATS_SPEC.md`. Formato: fecha — decisión — motivo.
   sesión, que es el disco externo muerto, y bloquea `file://`). Se usa **Chrome headless**
   (`google-chrome-stable --headless=new --screenshot`) contra un `python -m http.server` local,
   con `--user-data-dir` en `~/.cache`. Salida en `docs/design/out/editor/shots/`.
+
+## 2026-10-06 — Backend-UI (F4, rutas `/ui`, `docs/design/EDITOR_CONTEXT.md`)
+
+- **Entorno Jinja propio** (`app/web.py`): `Environment(FileSystemLoader("web"), autoescape)` en vez
+  de `Jinja2Templates` (§7 del contrato lo menciona, §1 describe el `Environment`). Motivo:
+  `Jinja2Templates` exige un `Request` en cada contexto e inyecta `url_for`, que ningún template usa;
+  así el contexto es exactamente el del contrato. Las respuestas son `HTMLResponse` normales.
+- **Filtros tolerantes a texto**: `ym`/`mdate` aceptan `date`, `None` **y** el string `"2024-03"`,
+  porque en un 422 el ítem del contexto es el `*Out` mezclado con los valores crudos del formulario.
+- **Booleanos en el 422**: al mezclar (`merged`), si el campo del `*Out` es `bool` y llega
+  `"true"`/`"false"` se convierte a bool. Si no, `{% if item.is_current %}` sería verdadero también
+  con `"false"` y los checkbox se re-pintarían mal.
+- **`max_pages` (`Literal[1,2,3]`)**: Pydantic no convierte `"2"` → `2` para un `Literal` de enteros
+  y el `<select>` del perfil manda texto. `app/web.py` castea solo los campos cuyo tipo es un
+  `Literal` de enteros (`coerce_for`); el resto lo convierte Pydantic.
+- **`employment_type` no tiene enum** en `models/enums.py` (es `VARCHAR(30)` libre). El test de
+  `choices` compara ese bloque con las claves de `web/i18n/es.json["employment_types"]`, que es la
+  fuente de las etiquetas del render. Los demás bloques se comparan con los enums, `THEMES`,
+  `ATS_FONTS` y los `Literal` de `schemas/profile.py`, **por conjunto de claves**: el contrato pide
+  conservar el orden del JSON de la UI, que no es el de los enums.
+- **Campo obligatorio vacío**: el contrato manda `""` → `None`, y Pydantic reportaba entonces
+  «Debe ser texto». `schemas/errors.py` traduce ahora a «Campo obligatorio» cualquier error de tipo
+  (`string_type`, `date_type`, `enum`…) cuyo `input` sea `None`. Afecta también a `/api` (mejora).
+- **Errores de dominio en `/ui`**: decorador `ui_errors` (no un `exception_handler` global, que
+  cambiaría `/api`): `NotFoundError` → 404, `ConflictError` → 409, error de validación sin partial →
+  422, todos en **texto plano** español como pide §2.2.
+- **Rutas explícitas por colección** en `app/routers/ui_items.py` (una tabla `SPECS` genera las 4
+  rutas de cada una de las 9 colecciones) en vez de `/ui/{parent}/{parent_id}/{coll}`. Motivo: evita
+  que `/ui/resumes/1/photo` o `/ui/resumes/1/validate` casen con la ruta genérica y deja el OpenAPI
+  correcto. Las URLs resultantes son exactamente las del contrato.
+- **Padre equivocado → 404** vía `ChildService.require_parent` (comprueba el modelo del padre) y
+  `service.get(item_id)` para `PUT`/`DELETE`; el padre de un `PUT` se resuelve desde el ítem.
+- **Foto normalizada a JPEG** (`services/asset.py`): se valida que la entrada sea JPEG/PNG/WebP
+  (≤5 MB), se recorta cuadrado centrado, se guarda `<uuid>.jpg` (lado ≤800) y `<uuid>_400.jpg`, y
+  `asset.mime` queda siempre `image/jpeg`. Motivo: una foto de CV no necesita alfa y así el `sha256`
+  (calculado sobre el JPEG normalizado) deduplica dos archivos con los mismos píxeles en distinto
+  contenedor. `width`/`height` son los del recorte.
+- **`DELETE /ui/resumes/{id}/photo` solo desvincula** (`photo_asset_id=None`) y borra el `asset` +
+  sus archivos **solo si ningún `basics` lo referencia** (`AssetService.delete_if_unused`). Motivo:
+  `ResumeService.duplicate` comparte el asset con la copia; borrarlo rompería el otro CV. Así se
+  cumple §4.5.3 (borrar el archivo del disco) sin dejar huérfanos.
+- `POST /api/assets` (spec §6) vive en `app/routers/assets.py` y usa el mismo `AssetService`;
+  `app/routers/pending.py` se queda sin rutas (su router vacío sigue montado) y
+  `test_pending_endpoints_return_501` se eliminó porque ya no queda ningún 501.
+- **Orden del panel de validación**: `SECTION_ORDER` (el de las secciones del editor, con `profile`,
+  `doc`, `pdf`, `export`, `all` al final y las desconocidas después) y luego severidad
+  (error, warning, info) y `rule_id`; así `loop.changed(f.section)` del template agrupa bien.
+- **Último reporte del perfil** para el modal de exportación: consulta directa a
+  `validation_report` ordenada por id desc (no hay método de servicio para «el último»).

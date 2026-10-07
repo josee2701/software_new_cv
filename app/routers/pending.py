@@ -1,18 +1,11 @@
-"""Endpoints from spec §6 that belong to later phases: 501 until implemented."""
+"""Endpoints from spec §6 that belong to later phases: 501 until implemented.
+
+Nothing is pending right now: the last one (``POST /api/assets``) moved to
+:mod:`app.routers.assets`. The empty router stays so a future phase can park a 501 here again.
+"""
 
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
 router = APIRouter(tags=["pending"])
-
-_PENDING = "No implementado todavía"
-
-
-def _not_implemented() -> None:
-    raise HTTPException(status.HTTP_501_NOT_IMPLEMENTED, _PENDING)
-
-
-@router.post("/assets", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def upload_asset() -> None:
-    _not_implemented()

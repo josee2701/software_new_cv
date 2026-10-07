@@ -43,9 +43,29 @@ _MESSAGES: dict[str, str] = {
 }
 
 
+#: A required (non-nullable) field that receives ``None`` reads like a missing one. The editor
+#: turns an empty input into ``None`` (EDITOR_CONTEXT §2.1), so this is the usual empty-field case.
+_NULL_KINDS = frozenset(
+    {
+        "string_type",
+        "int_type",
+        "float_type",
+        "bool_type",
+        "date_type",
+        "list_type",
+        "dict_type",
+        "enum",
+        "literal_error",
+        "model_attributes_type",
+    }
+)
+
+
 def _message(err: dict[str, Any]) -> str:
     kind = str(err.get("type", ""))
     ctx = err.get("ctx") or {}
+    if kind in _NULL_KINDS and err.get("input", ...) is None:
+        return _MESSAGES["missing"]
     if kind == "value_error":
         msg = str(err.get("msg", "")).removeprefix("Value error, ")
         if msg.startswith("value is not a valid email address"):
